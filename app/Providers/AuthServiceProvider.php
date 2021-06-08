@@ -26,68 +26,35 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::define('manage-users', function($user){
-            //return count(array_intersect(["SUPERADMIN"], json_decode($user->roles)));
-            return ($user->roles == 'SUPERADMIN');
+            return count(array_intersect(["SUPERADMIN"], json_decode($user->roles)));
         });
 
         Gate::define('manage-categories', function($user){
-            //return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
-            return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN');
+            return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
         });
 
         Gate::define('manage-products', function($user){
-            //return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
-            return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN');
+            return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
         });
 
         Gate::define('manage-vouchers', function($user){
-            //return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
-            return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN');
+            return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
         });
 
         Gate::define('manage-orders', function($user){
-            //return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
-            return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN' || $user->roles == 'SUPERVISOR');
+            return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
         });
 
         Gate::define('manage-edit-orders', function($user){
-            //return count(array_intersect(["SUPERADMIN"], json_decode($user->roles)));
-            return $user->roles == 'SUPERADMIN';
+            return count(array_intersect(["SUPERADMIN"], json_decode($user->roles)));
         });
 
         Gate::define('change-password', function($user){
-           // return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
-            return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN');
+            return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
         });
 
         Gate::define('manage-banner', function($user){
-            //return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
-            return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN');
-        });
-
-        Gate::define('manage-sales', function($user){
-            //return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
-            return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN');
-        });
-
-        Gate::define('manage-customers', function($user){
-            //return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
-            return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN');
-        });
-
-        Gate::define('manage-spv', function($user){
-            //return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
-            return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN');
-        });
-
-        Gate::define('manage-group', function($user){
-            //return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
-            return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN');
-        });
-
-        Gate::define('manage-paket', function($user){
-            //return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
-            return ($user->roles == 'SUPERADMIN' || $user->roles == 'ADMIN');
+            return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
         });
     }
 }

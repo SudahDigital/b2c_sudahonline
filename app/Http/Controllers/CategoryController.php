@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\CategoryExport;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Gate;
-use Maatwebsite\Excel\Facades\Excel;
 
 class CategoryController extends Controller
 {   
@@ -169,10 +167,6 @@ class CategoryController extends Controller
             $keyword = $request->get('q');
             $categories = \App\Category::where('name','LIKE',"%$keyword%")->get();
             return $categories;
-        }
-
-        public function export() {
-            return Excel::download( new CategoryExport(), 'Categories.xlsx') ;
         }
             
 }

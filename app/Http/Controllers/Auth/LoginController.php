@@ -26,57 +26,21 @@ class LoginController extends Controller
      *
      * @var string
      */
-    
+    /*
     protected $redirectTo = RouteServiceProvider::HOME;
-    //protected $redirectTo = '/home';
+    
     protected function redirectTo()
     {
-        /*
-        if ((in_array("SUPERADMIN", json_decode(auth()->user()->roles))) || (in_array("ADMIN", json_decode(auth()->user()->roles)))) {
+        if (auth()->user()->roles == 'ADMIN') {
             return '/home';
-        }else if (in_array("SALES", json_decode(auth()->user()->roles))) {
+        }else if (auth()->user()->roles == 'CUSTOMER') {
             return '/home_customer';
         }
-        return '/';
-        */
-        /*
-        if (in_array(auth()->user()->roles, ['SUPERADMIN']))
-        {
-            return '/home';
-        }
-        else if (in_array(auth()->user()->roles, ['SALES'])) 
-        {
-            return '/home_customer';
-        }
-        return '/';
-        */
+        return '/home';
         
-        if ((auth()->user()->roles == 'SUPERADMIN') || (auth()->user()->roles == 'ADMIN') || (auth()->user()->roles == 'SUPERVISOR')) {
-            return '/home';
-        }else if (auth()->user()->roles == 'SALES') {
-            return '/sales_home';
-        }
-        return '/';
-        
-        /*$roles = \Auth::user()->roles; 
-        switch ($roles) {
-            case 'ADMIN':
-                return '/home';
-            break;
-            case 'SUPERADMIN':
-                return '/home';
-            break;
-            case 'SUPERADMIN':
-                return '/sales_home';
-            break;  
+    }*/
 
-            default:
-                return '/login'; 
-            break;
-        }*/
-    }
-
-    
+    protected $redirectTo = '/home';
 
     /**
      * Create a new controller instance.

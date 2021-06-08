@@ -14,71 +14,30 @@ class AllProductExport implements FromCollection, WithMapping, WithHeadings
     */
     public function collection()
     {
-        //return product::withall();
-        return product::with('categories')->get();
+        return product::all();
     }
 
     public function map($product) : array {
-        $rows = [];
-        $stock_status= \DB::table('product_stock_status')->first();
-        if($stock_status->stock_status == 'ON'){
-            foreach ($product->categories as $p) {
-                array_push($rows,[
-                    $product->product_code,
-                    $product->Product_name,
-                    $product->description,
-                    $p->pivot->category_id,
-                    $product->price,
-                    $product->stock,
-                    $product->low_stock_treshold,
-                    $product->status,
-                    $product->updated_at,
-                ]);
-            }
-        }
-        else{
-            foreach ($product->categories as $p) {
-                array_push($rows,[
-                    $product->product_code,
-                    $product->Product_name,
-                    $product->description,
-                    $p->pivot->category_id,
-                    $product->price,
-                    $product->status,
-                    $product->updated_at,
-                ]);
-            }
-        }
-        
-        
-        return $rows;
+        return[
+                $product->id,
+                $product->Product_name,
+                $product->description,
+                $product->price,
+                $product->stock,
+                $product->low_stock_treshold,
+                $product->status,
+            ];
     }
 
     public function headings() : array {
-        $stock_status= \DB::table('product_stock_status')->first();
-        if($stock_status->stock_status == 'ON'){
-            return [
-                'Product_Code',
-                'Product_Name',
-                'Description',
-                'category_id',
-                'Price',
-                'Stock',
-                'Low_stock_treshold',
-                'Status',
-                'Updated At',
-            ] ; 
-        }else{
-            return [
-                'Product_Code',
-                'Product_Name',
-                'Description',
-                'category_id',
-                'Price',
-                'Status',
-                'Updated At',
-            ] ;
-        }
-        
+        return [
+           'Product_id',
+           'Product_Name',
+           'Description',
+           'Price',
+           'Stock',
+           'Low_stock_treshold',
+           'Status',
+        ] ;
     }
 }

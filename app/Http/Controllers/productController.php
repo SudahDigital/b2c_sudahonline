@@ -35,16 +35,14 @@ class productController extends Controller
         $products = \App\product::with('categories')
         ->where('Product_name','LIKE',"%$keyword%")
         ->where('status',strtoupper($status))->get();//->paginate(10);
-        $stock_status= DB::table('product_stock_status')->first();
         }
         else
             {
             $products = \App\product::with('categories')
             ->where('Product_name','LIKE',"%$keyword%")->get();
             //->paginate(10);
-            $stock_status= DB::table('product_stock_status')->first();
             }
-        return view('products.index', ['products'=> $products, 'stock_status'=>$stock_status]);
+        return view('products.index', ['products'=> $products]);
     }
 
     /**
@@ -54,8 +52,7 @@ class productController extends Controller
      */
     public function create()
     {
-        $stock_status= DB::table('product_stock_status')->first();
-        return view('products.create',['stock_status'=>$stock_status]);
+        return view('products.create');
     }
 
     /**
@@ -74,7 +71,6 @@ class productController extends Controller
             "stock" => "required|digits_between:0,10"
         ])->validate();*/
         $new_product = new \App\product;
-        $new_product->product_code = $request->get('code');
         $new_product->Product_name = $request->get('Product_name');
         $new_product->description = $request->get('description');
         if($request->has('discount') && ($request->get('discount') > 0)){
@@ -118,7 +114,7 @@ class productController extends Controller
                 ->with('status', 'Product successfully saved and published');
         } else {
           return redirect()
-                ->route('products.create')
+                ->route('Products.create')
                 ->with('status', 'Product saved as draft');
         }
     }
@@ -143,8 +139,7 @@ class productController extends Controller
     public function edit($id)
     {
         $product = \App\product::findOrFail($id);
-        $stock_status= DB::table('product_stock_status')->first();
-        return view('products.edit', ['product' => $product, 'stock_status'=>$stock_status]);
+        return view('products.edit', ['product' => $product]);
     }
 
     /**
@@ -157,7 +152,6 @@ class productController extends Controller
     public function update(Request $request, $id)
     {
         $product = \App\product::findOrFail($id);
-        $product->product_code = $request->get('code');
         $product->Product_name = $request->get('Product_name');
         $product->description = $request->get('description');
         if($request->has('discount') && ($request->get('discount') > 0)){
@@ -183,9 +177,9 @@ class productController extends Controller
         $product->slug = $request->get('slug');
         $new_image = $request->file('image');
         if($new_image){
-            if($product->image && file_exists(storage_path('app/public/'.$product->image))){
-            \Storage::delete('public/'. $product->image);
-            }
+        if($product->image && file_exists(storage_path('app/public/'.$product->image))){
+        \Storage::delete('public/'. $product->image);
+        }
         $new_image_path = $new_image->store('products-images', 'public');
         $product->image = $new_image_path;
         }
@@ -241,11 +235,6 @@ class productController extends Controller
 
     }
 
-    public function OnOff_stock(Request $request){
-        $status = $request->get('status');
-        $product = DB::table('product_stock_status')->update(array('stock_status'=>$status));
-    }
-
     public function low_stock(){
         $products = \App\product::with('categories')->whereRaw('stock < low_stock_treshold')->get();//->paginate(10);
 
@@ -282,9 +271,7 @@ class productController extends Controller
             "file" => "required|mimes:xls,xlsx"
         ])->validate();
         
-        Excel::import(new ProductsImport,request()->file('file'));
-        return redirect()->route('products.import_products')->with('status', 'File successfully upload');
-        /*$data = Excel::toArray(new ProductsImport, request()->file('file')); 
+        $data = Excel::toArray(new ProductsImport, request()->file('file')); 
 
         $update = collect(head($data))
             ->each(function ($row, $key){
@@ -296,16 +283,5 @@ class productController extends Controller
         if($update){
             return redirect()->route('products.import_products')->with('status', 'File successfully upload'); 
         }
-        */
-    }
-
-    public function codeSearch(Request $request){
-        $keyword = $request->get('code');
-        $vouchers = \App\product::where('product_code','=',"$keyword")->count();
-        if ($vouchers > 0) {
-            echo "taken";	
-          }else{
-            echo 'not_taken';
-          }
     }
 }

@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Gate;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\OrdersExportMapping;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -23,38 +24,16 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $user =\Auth::user()->roles;
-        $id_user =\Auth::user()->id;
-        //dd($user);
-        if($user == 'SUPERVISOR'){
-            $status = $request->get('status');
-            if($status){
-            $stts = strtoupper($status);
-            $orders = \DB::select("SELECT * FROM orders WHERE customer_id IS NOT NULL AND status='$stts' AND EXISTS 
-                    (SELECT spv_id,sls_id FROM spv_sales WHERE 
-                    spv_sales.sls_id = orders.user_id AND spv_id='$id_user') ORDER BY created_at DESC");
-            }
-            else{
-                $orders = \DB::select("SELECT * FROM orders WHERE customer_id IS NOT NULL AND EXISTS 
-                (SELECT spv_id,sls_id FROM spv_sales WHERE 
-                spv_sales.sls_id = orders.user_id AND spv_id='$id_user') ORDER BY created_at DESC");
-                //dd($orders);
-            }
+        $status = $request->get('status');
+        if($status){
+        $orders = \App\Order::with('products')->whereNotNull('username')
+        ->where('status',strtoupper($status))
+        ->orderBy('id', 'DESC')->get();//paginate(10);
         }
         else{
-            $status = $request->get('status');
-            if($status){
-            $orders = \App\Order::with('products')->whereNotNull('customer_id')
-            ->where('status',strtoupper($status))
-            ->orderBy('created_at', 'DESC')->get();//paginate(10);
-            }
-            else{
-                $orders = \App\Order::with('products')->with('customers')->whereNotNull('customer_id')
-                ->orderBy('created_at', 'DESC')->get();
-            //dd($orders);
-            }
+            $orders = \App\Order::with('products')->whereNotNull('username')
+            ->orderBy('id', 'DESC')->get();
         }
-        
         return view('orders.index', ['orders' => $orders]);
     }
 
@@ -111,24 +90,22 @@ class OrderController extends Controller
     public function update(Request $request, $id)
     {
         $order = \App\Order::findOrFail($id);
-        $dateNow = date('Y-m-d H:i:s');
-        $status = $request->get('status');
-        if($status == 'PROCESS'){
-            $order->status = $status;
-            $order->process_time = $dateNow;
-            //$order->save();
-        }else if($status == 'FINISH'){
-            $order->status = $status;
-            $order->finish_time = $dateNow;
-            //$order->save();
-        }else if($status == 'CANCEL'){
-            $order->status = $status;
-            $order->cancel_time = $dateNow;
-        }else{
-            $order->status = $status;
-        }
+      
+        $order->status = $request->get('status');
+
         $order->save();
-        
+
+        if(($order->save()) && ($request->get('status') == 'CANCEL')){
+            $cek_quantity = \App\Order::with('products')->where('id',$id)->get();
+            foreach($cek_quantity as $q){
+                foreach($q->products as $p){
+                    $up_product = \App\product::findOrfail($p->pivot->product_id);
+                    $up_product->stock += $p->pivot->quantity;
+                    $up_product->save();
+                    }
+                }
+        }
+      
         return redirect()->route('orders.detail', [$order->id])->with('status', 'Order status succesfully updated');
     }
 
@@ -146,17 +123,7 @@ class OrderController extends Controller
     public function detail($id)
     {
         $order = \App\Order::findOrFail($id);
-        $paket_list = \DB::table('order_product')
-                ->join('pakets','pakets.id','=','order_product.paket_id')
-                ->join('groups','groups.id','=','order_product.group_id')
-                ->where('order_id',$id)
-                ->whereNotNull('paket_id')
-                ->whereNotNull('group_id')
-                ->whereNull('bonus_cat')
-                ->distinct()
-                ->get(['paket_id','group_id']);
-                //dd($paket_list);
-        return view('orders.detail', ['order' => $order, 'paket_list'=>$paket_list]);
+        return view('orders.detail', ['order' => $order]);
     }
 
     public function export_mapping() {

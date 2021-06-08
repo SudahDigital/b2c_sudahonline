@@ -5,19 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
-
 class UserController extends Controller
 {
     
     public function __construct(){
-        $this->middleware('auth');
         $this->middleware(function($request, $next){
             
             if(Gate::allows('manage-users')) return $next($request);
 
             abort(403, 'Anda tidak memiliki cukup hak akses');
         });
-
     }
     /**
      * Display a listing of the resource.
@@ -26,8 +23,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $client=\App\B2b_client::findOrfail(auth()->user()->client_id);
-        $users = \App\User::where('roles','!=','SALES')->get();//paginate(10);
+        $users = \App\User::get();//paginate(10);
         $filterkeyword = $request->get('keyword');
         $status = $request->get('status');
         if($filterkeyword){
@@ -43,7 +39,7 @@ class UserController extends Controller
         if($status){
             $users = \App\User::where('status', 'Like', "%$status")->get();//paginate(10);
         }
-        return view ('/users.index',['users'=>$users]);
+        return view ('users.index',['users'=>$users]);
     }
 
     /**
@@ -69,7 +65,7 @@ class UserController extends Controller
         $new_user->email = $request->get('email');
         $new_user->password = \Hash::make($request->get('password'));
         //$new_user->username = $request->get('username');
-        $new_user->roles = $request->get('roles');
+        $new_user->roles = json_encode($request->get('roles'));
         $new_user->address = $request->get('address');
         $new_user->phone = $request->get('phone');
         if($request->file('avatar')){
@@ -123,7 +119,7 @@ class UserController extends Controller
         $user =\App\User::findOrFail($id);
         $user->name = $request->get('name');
         $user->status = $request->get('status');
-        $user->roles = $request->get('roles');
+        $user->roles = json_encode($request->get('roles'));
         $user->phone = $request->get('phone');
         $user->address = $request->get('address');
         if($request->file('avatar')){
@@ -149,6 +145,4 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('users.index')->with('status','User Succsessfully Delete');
     }
-
-    
 }

@@ -22,7 +22,7 @@ class BannerController extends Controller
      */
     public function index(Request $request)
     {
-        $banner = \App\Banner::orderBy('position', 'ASC')->get();//paginate(10);\App\Banner::orderBy('id', 'DESC')->first();
+        $banner = \App\Banner::orderBy('id', 'DESC')->get();//paginate(10);\App\Banner::orderBy('id', 'DESC')->first();
         $keyword = $request->get('name');
         if($keyword){
             $banner = \App\Banner::where('name','LIKE',"%$keyword%")->get();//paginate(10);
@@ -48,9 +48,6 @@ class BannerController extends Controller
      */
     public function store(Request $request)
     {
-        \Validator::make($request->all(), [
-            "image" => "required|image|mimes:jpeg,png,jpg|max:500"
-        ])->validate();
         $name = $request->get('name');
         $newBanner = new \App\Banner;
         $newBanner->name = $name;
@@ -96,9 +93,6 @@ class BannerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        \Validator::make($request->all(), [
-            "image" => "required|image|mimes:jpeg,png,jpg|max:500"
-        ])->validate();
         $name = $request->get('name');
         //$slug = $request->get('slug');
         $banner = \App\Banner::findOrFail($id);
@@ -166,19 +160,5 @@ class BannerController extends Controller
 
             }
         }
-    
-    public function post_sortable(Request $request){
-        $banners= \App\Banner::all();
-
-        foreach ($banners as $ban) {
-            foreach ($request->posit as $order) {
-                if ($order['id'] == $ban->id) {
-                    $ban->update(['position' => $order['position']]);
-                }
-            }
-        }
-        
-        return response('Update Successfully.', 200);
-    }
 
 }

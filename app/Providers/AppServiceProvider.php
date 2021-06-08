@@ -4,7 +4,6 @@ namespace App\Providers;
 use Carbon\Carbon;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Schema;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,29 +25,15 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Gate::define('isAdmin', function($user) {
-            //return in_array("ADMIN", json_decode($user->roles));
-            return $user->roles == 'ADMIN';
+            return in_array("ADMIN", json_decode($user->roles));
          });
     
          Gate::define('isSuperadmin', function($user) {
-             //return in_array("SUPERADMIN", json_decode($user->roles));
-             return $user->roles == 'SUPERADMIN';
+             return in_array("SUPERADMIN", json_decode($user->roles));
          });
 
-         Gate::define('isSales', function($user) {
-            //return in_array("SALES", json_decode($user->roles));
-            return $user->roles == 'SALES';
-        });
-
-        Gate::define('isSpv', function($user) {
-            //return in_array("SALES", json_decode($user->roles));
-            return $user->roles == 'SUPERVISOR';
-        });
-        
         config(['app.locale' => 'id']);
         Carbon::setLocale('id');
         date_default_timezone_set('Asia/Jakarta');
-
-        Schema::defaultStringLength(191);
     }
 }

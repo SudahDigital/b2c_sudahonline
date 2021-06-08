@@ -31,22 +31,6 @@ class User extends Authenticatable
     public function orders(){
         return $this->hasMany('App\Order');
     }
-
-    public function cities(){
-        return $this->belongsTo('App\City','city_id');
-    }
-
-    public function customers(){
-        return $this->belongsTo('App\customer','user_id');
-    }
-
-    public function spv(){
-        return $this->hasMany('App\Spv_sales','spv_id');
-    }
-
-    public function sls(){
-        return $this->hasMany('App\Spv_sales','sls_id');
-    }
     /**
      * The attributes that should be cast to native types.
      *
