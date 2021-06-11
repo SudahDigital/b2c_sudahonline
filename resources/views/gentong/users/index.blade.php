@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends($client_slug.'.layouts.master')
 @section('title') User List @endsection
 @section('content')
 @if(session('status'))
@@ -7,7 +7,7 @@
 	</div>
 @endif
 
-<form action="{{route('users.index')}}">
+<form action="{{route('users.index', $client_slug)}}">
 	<div class="row">
 		<!--
 		<div class="col-md-4">
@@ -26,7 +26,7 @@
 		</div>
 		-->
 		<div class="col-md-12">
-			<a href="{{route('users.create')}}" class="btn btn-success pull-right">Create User</a>
+			<a href="{{route('users.create', $client_slug)}}" class="btn btn-success pull-right">Create User</a>
 		</div>
 	</div>
 </form>	
@@ -65,7 +65,7 @@
 					@endif
 				</td>
 				<td>
-					<a class="btn btn-info btn-xs" href="{{route('users.edit',[$u->id])}}"><i class="material-icons">edit</i></a>&nbsp;
+					<a class="btn btn-info btn-xs" href="{{route('users.edit',[$u->id, $client_slug])}}"><i class="material-icons">edit</i></a>&nbsp;
 					<button type="button" class="btn btn-danger btn-xs waves-effect" data-toggle="modal" data-target="#deleteModal{{$u->id}}"><i class="material-icons">delete</i></button>&nbsp;
 					<button type="button" class="btn bg-grey waves-effect" data-toggle="modal" data-target="#detailModal{{$u->id}}">Detail</button>
 
@@ -80,7 +80,7 @@
 		                           Delete this user permananetly..? 
 		                        </div>
 		                        <div class="modal-footer">
-		                        	<form action="{{route('users.destroy',[$u->id])}}" method="POST">
+		                        	<form action="{{route('users.destroy',[$u->id, $client_slug])}}" method="POST">
 										@csrf
 										<input type="hidden" name="_method" value="DELETE">
 										<button type="submit" class="btn btn-link waves-effect">Delete</button>

@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
-    <title>Ice-Gentong</title>
+    <title>MT-Gentong versi 1</title>
 
-    <link rel="icon" href="{{ asset('assets/image/logo-gentong-nav.png')}}" type="image/png" sizes="16x16">
+    <link rel="icon" href="{{ asset('assets/image/'.$client_slug.'/logo-gentong-nav.png')}}" type="image/png" sizes="16x16">
     <!-- Bootstrap CSS CDN -->
     <link href="//db.onlinewebfonts.com/c/3dd6e9888191722420f62dd54664bc94?family=Myriad+Pro" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
@@ -135,12 +135,12 @@
 <body>
     <div class="preloader" id="preloader">
         <div class="loading">
-          <img src="{{ asset('assets/image/preloader.gif') }}" width="80" alt="preloader">
+          <img src="{{ asset('assets/image/'.$client_slug.'/preloader.gif') }}" width="80" alt="preloader">
           <p style="font-weight:900;line-height:2;color:#6a3137;margin-left: -10%;">Harap Tunggu</p>
         </div>
     </div>
 
-    <div id="loader" class="lds-dual-ring hidden overlay_ajax"><img class="hidden" src="{{ asset('assets/image/preloader.gif') }}" width="80" alt="preloader"></div>
+    <div id="loader" class="lds-dual-ring hidden overlay_ajax"><img class="hidden" src="{{ asset('assets/image/'.$client_slug.'/preloader.gif') }}" width="80" alt="preloader"></div>
     
     @if ($message = Session::get('success'))
       <div class="alert alert-success alert-block">
@@ -154,34 +154,34 @@
          <nav id="sidebar">
            
             <div class="sidebar-header mx-auto">
-                <a href="{{url('/') }}">
-                    <img src="{{ asset('assets/image/logo-gentong.png') }}" width="70%" height="auto" class="d-inline-block align-top" alt="logo-gentong" loading="lazy">
+                <a href="{{url('/', $client_slug) }}">
+                    <img src="{{ asset('assets/image/'.$client_slug.'/logo-gentong.png') }}" width="70%" height="auto" class="d-inline-block align-top" alt="logo-gentong" loading="lazy">
                 </a>
             </div>
             <ul class="list-unstyled components">
                 
                 <li class="">
-                    <a href="{{ url('/') }}">Beranda</a>
+                    <a href="{{ url('/', $client_slug) }}">Beranda</a>
                 </li>
                 <li>
                     <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Produk</a>
                     <ul class="collapse list-unstyled" id="pageSubmenu">
                             @foreach($categories as $key => $value)
                                 <li>
-                                    <a href="{{route('category.index', ['id'=>$value->id] )}}" style="font-size: 1.1em !important;">{{$value->name}}</a>
+                                    <a href="{{route('category.index', ['id'=>$value->id, $client_slug] )}}" style="font-size: 1.1em !important;">{{$value->name}}</a>
                                 </li>
                             @endforeach
                     </ul>
                 </li>
                 <li>
-                    <a href="{{URL::route('cara_belanja')}}">Cara Berbelanja</a>
+                    <a href="{{URL::route('cara_belanja', $client_slug)}}">Cara Berbelanja</a>
                 </li>
                 <li>
-                    <a href="{{URL::route('contact')}}">Kontak Kami</a>
+                    <a href="{{URL::route('contact', $client_slug)}}">Kontak Kami</a>
                 </li>
                 <!--
                 <li>
-                    <a href="{{URL::route('riwayat_pemesanan')}}">Riwayat Pesanan</a>
+                    <a href="{{URL::route('riwayat_pemesanan', $client_slug)}}">Riwayat Pesanan</a>
                 </li>
                 -->
             </ul>
@@ -200,11 +200,11 @@
             @else    
                     <!--    
                     <div class="mx-auto text-center">
-                        <a href="{{route('login')}}" class="btn login">Sign In</a>
+                        <a href="{{route('login', $client_slug)}}" class="btn login">Sign In</a>
                     </div>
                             
                     <div class="mx-auto text-center">  
-                            <a href="{{route('register')}}" class="register">Sign Up</a>
+                            <a href="{{route('register', $client_slug)}}" class="register">Sign Up</a>
                     </div> 
                     -->
             @endif
@@ -232,9 +232,9 @@
                    
                     <a class="navbar-brand nav-center" href="{{ url('/') }}">
                     
-                        <img src="{{ asset('assets/image/logo-gentong.png') }}" class="p-0 m-0 d-inline-block align-top" alt="logo-gentong" loading="lazy">
+                        <img src="{{ asset('assets/image/'.$client_slug.'/logo-gentong.png') }}" class="p-0 m-0 d-inline-block align-top" alt="logo-gentong" loading="lazy">
                     </a>
-                    <form action="{{route('search.index')}}" class="form-inline my-2 my-lg-0 ml-auto d-none d-md-inline-block">
+                    <form action="{{route('search.index', $client_slug)}}" class="form-inline my-2 my-lg-0 ml-auto d-none d-md-inline-block">
                         <div class="input-group">
                             <div class="input-group-append">
                                 <button class="btn  my-2 my-sm-0 search_botton_navbar" type="submit" id="button-search-addon" style="border-radius: 50%;"><i class="fa fa-search"></i></button>&nbsp;&nbsp;&nbsp;
@@ -266,7 +266,7 @@
             <div class="modal-content" style="background: #FDD8AF">
                 <div class="modal-body">
                     <div class="row justify-content-center">
-                        <form action="{{route('search.index')}}">
+                        <form action="{{route('search.index', $client_slug)}}">
                             <div class="input-group">
                                 <div class="input-group-append">
                                         <button class="btn search_botton_navbar" type="submit" id="button-search-addon" style="border-radius: 50%;"><i class="fa fa-search"></i></button>

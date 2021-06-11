@@ -1,4 +1,4 @@
-@extends('customer.layouts.template-nobanner')
+@extends($client_slug.'.customer.layouts.template-nobanner')
 @section('content')
     <div class="container" style="margin-top: 80px;">
         <div class="row align-middle">
@@ -17,7 +17,7 @@
             <div class="row card-body">
             
                 <div class="col-6  col-md-2 card-img-top">
-                    <img src="{{asset('assets/image/cari-produk.png')}}" class="card-img-top"  alt="...">
+                    <img src="{{asset('assets/image/'.$client_slug.'/cari-produk.png')}}" class="card-img-top"  alt="...">
                 </div>
                 <div class="col-6  col-md-4 card-img-top">
                     <h5 class="card-title">1. Cari Produk</h5>
@@ -25,7 +25,7 @@
                 </div>
 
                 <div class="col-6 col-md-2 card-img-top">
-                    <img src="{{asset('assets/image/keranjang.png')}}" class="card-img-top"  alt="...">
+                    <img src="{{asset('assets/image/'.$client_slug.'/keranjang.png')}}" class="card-img-top"  alt="...">
                 </div>
                 <div class="col-6 col-md-4 card-img-top">
                     <h5 class="card-title">2. Masukkan Dalam Keranjang Belanja</h5>
@@ -34,7 +34,7 @@
                 </div>
 
                 <div class="col-6 col-md-2 card-img-top">
-                    <img src="{{asset('assets/image/isi-data.png')}}" class="card-img-top"  alt="...">
+                    <img src="{{asset('assets/image/'.$client_slug.'/isi-data.png')}}" class="card-img-top"  alt="...">
                 </div>
                 <div class="col-6 col-md-4 card-img-top">
                     <h5 class="card-title">3. Isi Data</h5>
@@ -43,7 +43,7 @@
                 </div>
 
                 <div class="col-6 col-md-2 card-img-top">
-                    <img src="{{asset('assets/image/confirm-wa.png')}}" class="card-img-top"  alt="..." >
+                    <img src="{{asset('assets/image/'.$client_slug.'/confirm-wa.png')}}" class="card-img-top"  alt="..." >
                 </div>
                 <div class="col-6 col-md-4 card-img-top">
                     <h5 class="card-title">4. Konfirmasi Via  Whatsapp</h5>

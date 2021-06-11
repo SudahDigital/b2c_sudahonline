@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends($client_slug.'.layouts.master')
 @section('title') Product List @endsection
 @section('content')
 @if(session('status'))
@@ -7,7 +7,7 @@
 	</div>
 @endif
 
-<form action="{{route('products.index')}}">
+<form action="{{route('products.index', $client_slug)}}">
 	<div class="row">
 		<!--
 		<div class="col-md-3">
@@ -24,19 +24,19 @@
 		<div class="col-md-6">
 			<ul class="nav nav-tabs tab-col-pink pull-left" role="tablist">
 				<li role="presentation" class="{{Request::get('status') == NULL && Request::path() == 'products' ? 'active' : ''}}">
-					<a href="{{route('products.index')}}" aria-expanded="true" >All</a>
+					<a href="{{route('products.index', $client_slug)}}" aria-expanded="true" >All</a>
 				</li>
 				<li role="presentation" class="{{Request::get('status') == 'publish' ?'active' : '' }}">
-					<a href="{{route('products.index', ['status' =>'publish'])}}" >PUBLISH</a>
+					<a href="{{route('products.index', ['status' =>'publish', $client_slug])}}" >PUBLISH</a>
 				</li>
 				<li role="presentation" class="{{Request::get('status') == 'draft' ?'active' : '' }}">
-					<a href="{{route('products.index', ['status' =>'draft'])}}">DRAFT</a>
+					<a href="{{route('products.index', ['status' =>'draft', $client_slug])}}">DRAFT</a>
 				</li>
 				<li role="presentation" class="active">
-					<a href="{{route('products.low_stock')}}">LOW STOCK</a>
+					<a href="{{route('products.low_stock', $client_slug)}}">LOW STOCK</a>
 				</li>
 				<li role="presentation">
-					<a href="{{route('products.trash')}}">TRUSH</a>
+					<a href="{{route('products.trash', $client_slug)}}">TRUSH</a>
 				</li>
 			</ul>
 		</div>
@@ -44,9 +44,9 @@
 			&nbsp;
 		</div>
 		<div class="col-md-12">
-			<a href="{{route('products.import_products')}}" class="btn btn-success ">Import Excel (<small>Update Stock</small>) </a>&nbsp;
-			<a href="{{route('products.export_lowstock')}}" class="btn btn-success ">Export Excel (<small>Products Stock</small>)</a>&nbsp;
-			<a href="{{route('products.edit_stock')}}" class="btn bg-cyan">Update Stock</a>
+			<a href="{{route('products.import_products', $client_slug)}}" class="btn btn-success ">Import Excel (<small>Update Stock</small>) </a>&nbsp;
+			<a href="{{route('products.export_lowstock', $client_slug)}}" class="btn btn-success ">Export Excel (<small>Products Stock</small>)</a>&nbsp;
+			<a href="{{route('products.edit_stock', $client_slug)}}" class="btn bg-cyan">Update Stock</a>
 		</div>
 	</div>
 </form>	
@@ -104,7 +104,7 @@
 					@endif
 				</td>
 				<td>
-					<a class="btn btn-info btn-xs" href="{{route('products.edit',[$p->id])}}"><i class="material-icons">edit</i></a>
+					<a class="btn btn-info btn-xs" href="{{route('products.edit',[$p->id, $client_slug])}}"><i class="material-icons">edit</i></a>
 				</td>
 			</tr>
 			@endforeach

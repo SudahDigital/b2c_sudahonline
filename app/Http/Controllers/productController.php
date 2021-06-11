@@ -29,20 +29,30 @@ class productController extends Controller
      */
     public function index(Request $request)
     {
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$request->client_id'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
         $status = $request->get('status');
         $keyword = $request->get('keyword') ? $request->get('keyword') : '';
         if($status){
         $products = \App\product::with('categories')
         ->where('Product_name','LIKE',"%$keyword%")
+        ->where('client_id','=',$clientID)
         ->where('status',strtoupper($status))->get();//->paginate(10);
         }
         else
             {
             $products = \App\product::with('categories')
-            ->where('Product_name','LIKE',"%$keyword%")->get();
+            ->where('Product_name','LIKE',"%$keyword%")->where('client_id','=',$clientID)->get();
             //->paginate(10);
             }
-        return view('products.index', ['products'=> $products]);
+        return view($clientNM.'.products.index', ['products'=> $products, 'client_slug'=>$clientNM]);
     }
 
     /**
@@ -50,9 +60,18 @@ class productController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($client)
     {
-        return view('products.create');
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
+        return view($clientNM.'.products.create', ['client_slug'=>$clientNM]);
     }
 
     /**
@@ -61,7 +80,7 @@ class productController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $client)
     {
         /*\Validator::make($request->all(), [
             "Product_name" => "required|min:0|max:200",
@@ -70,6 +89,15 @@ class productController extends Controller
             "price" => "required|digits_between:0,10",
             "stock" => "required|digits_between:0,10"
         ])->validate();*/
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
         $new_product = new \App\product;
         $new_product->Product_name = $request->get('Product_name');
         $new_product->description = $request->get('description');
@@ -96,6 +124,7 @@ class productController extends Controller
         $new_product->status = $request->get('save_action');
         $new_product->slug = \Str::slug($request->get('Product_name'));
         $new_product->created_by = \Auth::user()->id;
+        $new_product->client_id = $clientID;
         $image = $request->file('image');
       
         if($image){
@@ -110,11 +139,11 @@ class productController extends Controller
       
         if($request->get('save_action') == 'PUBLISH'){
           return redirect()
-                ->route('products.create')
+                ->route('products.create', $clientNM)
                 ->with('status', 'Product successfully saved and published');
         } else {
           return redirect()
-                ->route('Products.create')
+                ->route('Products.create', $clientNM)
                 ->with('status', 'Product saved as draft');
         }
     }
@@ -136,10 +165,19 @@ class productController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, $client)
     {
-        $product = \App\product::findOrFail($id);
-        return view('products.edit', ['product' => $product]);
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
+        $product = \App\product::where('client_id', $clientID)->findOrFail($id);
+        return view($clientNM.'.products.edit', ['product' => $product, 'client_slug' => $clientNM]);
     }
 
     /**
@@ -149,9 +187,18 @@ class productController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, $client)
     {
-        $product = \App\product::findOrFail($id);
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
+        $product = \App\product::where('client_id', $clientID)->findOrFail($id);
         $product->Product_name = $request->get('Product_name');
         $product->description = $request->get('description');
         if($request->has('discount') && ($request->get('discount') > 0)){
@@ -187,7 +234,7 @@ class productController extends Controller
         $product->status = $request->get('status');
         $product->save();
         $product->categories()->sync($request->get('categories'));
-        return redirect()->route('products.edit', [$product->id])->with('status',
+        return redirect()->route('products.edit', [$product->id, $clientNM])->with('status',
         'Product successfully updated');
     }
 
@@ -197,58 +244,119 @@ class productController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, $client)
     {
-        $product = \App\product::findOrFail($id);
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
+        $product = \App\product::where('client_id', $clientID)->findOrFail($id);
         $product->delete();
-        return redirect()->route('products.index')->with('status', 'Product moved to
+        return redirect()->route('products.index', $clientNM)->with('status', 'Product moved to
         trash');
     }
 
-    public function trash(){
+    public function trash($client){
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
         $products = \App\product::onlyTrashed()->get();//->paginate(10);
 
-        return view('products.trash', ['products' => $products]);
+        return view($clientNM.'.products.trash', ['products' => $products, 'client_slug'=>$clientNM]);
     }
 
-    public function restore($id){
+    public function restore($id, $client){
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
 
-        $product = \App\product::withTrashed()->findOrFail($id);
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
+        $product = \App\product::where('client_id', $clientID)->withTrashed()->findOrFail($id);
         if($product->trashed()){
         $product->restore();
-        return redirect()->route('products.trash')->with('status', 'Product successfully restored');
+        return redirect()->route('products.trash', $clientNM)->with('status', 'Product successfully restored');
         } else {
-        return redirect()->route('products.trash')->with('status', 'Product is not in trash');
+        return redirect()->route('products.trash', $clientNM)->with('status', 'Product is not in trash');
         }
     }
 
-    public function deletePermanent($id){
+    public function deletePermanent($id, $client){
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
 
-        $product = \App\product::withTrashed()->findOrFail($id);
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
+        $product = \App\product::where('client_id', $clientID)->withTrashed()->findOrFail($id);
         if(!$product->trashed()){
-        return redirect()->route('products.trash')->with('status', 'Product is not in trash!')->with('status_type', 'alert');
+        return redirect()->route('products.trash', $clientNM)->with('status', 'Product is not in trash!')->with('status_type', 'alert');
         } else {
         $product->categories()->detach();
         $product->forceDelete();
-        return redirect()->route('products.trash')->with('status', 'Product permanently deleted!');
+        return redirect()->route('products.trash', $clientNM)->with('status', 'Product permanently deleted!');
         }
 
     }
 
-    public function low_stock(){
-        $products = \App\product::with('categories')->whereRaw('stock < low_stock_treshold')->get();//->paginate(10);
+    public function low_stock($client){
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
 
-        return view('products.low_stock', ['products' => $products]);
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
+        $products = \App\product::with('categories')->where('client_id', $clientID)->whereRaw('stock < low_stock_treshold')->get();//->paginate(10);
+
+        return view($clientNM.'.products.low_stock', ['products' => $products, 'client_slug'=>$clientNM]);
     }
 
-    public function edit_stock(){
-        return view('products.edit_stock');
+    public function edit_stock($client){
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
+        return view($clientNM.'.products.edit_stock', ['client_slug'=>$clientNM]);
     }
 
-    public function update_low_stock(Request $request){
+    public function update_low_stock(Request $request, $client){
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
         $newstock= $request->get('stock');
         $product = DB::table('products')->whereRaw('stock < low_stock_treshold')
-                    ->where('deleted_at',NULL)->update(array('stock' => $newstock));
+                    ->where('deleted_at',NULL)->where('client_id', $clientID)->update(array('stock' => $newstock));
         return redirect()->back()->with('status',
         'Stock successfully updated');
     }

@@ -7,7 +7,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>MT-Gentong versi 1</title>
 
-    <link rel="icon" href="{{ asset('assets/image/logo-gentong-nav.png')}}" type="image/png" sizes="16x16">
+    <link rel="icon" href="{{ asset('assets/image/'.$client_slug.'/logo-gentong-nav.png')}}" type="image/png" sizes="16x16">
     <!-- Bootstrap CSS CDN -->
     <link href="//db.onlinewebfonts.com/c/3dd6e9888191722420f62dd54664bc94?family=Myriad+Pro" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
@@ -496,46 +496,46 @@
 <body>
     <div class="preloader" id="preloader">
         <div class="loading">
-          <img src="{{ asset('assets/image/preloader.gif') }}" width="80" alt="preloader">
+          <img src="{{ asset('assets/image/'.$client_slug.'/preloader.gif') }}" width="80" alt="preloader">
           <p style="font-weight:900;line-height:2;color:#6a3137;margin-left: -10%;">Harap Tunggu</p>
         </div>
     </div>
 
-    <div id="loader" class="lds-dual-ring hidden overlay_ajax"><img class="hidden" src="{{ asset('assets/image/preloader.gif') }}" width="80" alt="preloader"></div>
+    <div id="loader" class="lds-dual-ring hidden overlay_ajax"><img class="hidden" src="{{ asset('assets/image/'.$client_slug.'/preloader.gif') }}" width="80" alt="preloader"></div>
     
     <div id="my-welcome-message" class="">
-        <img src="{{ asset('assets/image/popup-cara-belanja-lg.jpg') }}" class="d-none d-md-block d-md-none w-100" alt="popup-cara-belanja-lg" style="">
-        <img src="{{ asset('assets/image/popup-cara-belanja.jpg') }}" class="d-md-none w-100 h-100" alt="popup-cara-belanja" style="">
+        <img src="{{ asset('assets/image/'.$client_slug.'/popup-cara-belanja-lg.jpg') }}" class="d-none d-md-block d-md-none w-100" alt="popup-cara-belanja-lg" style="">
+        <img src="{{ asset('assets/image/'.$client_slug.'/popup-cara-belanja.jpg') }}" class="d-md-none w-100 h-100" alt="popup-cara-belanja" style="">
     </div>
     
     <div class="wrapper">
         <!-- Sidebar  -->
         <nav id="sidebar">
             <div class="sidebar-header mx-auto">
-                <a href="{{url('/') }}">
-                    <img src="{{ asset('assets/image/logo-gentong.png') }}" width="70%" height="auto" class="d-inline-block align-top" alt="logo-gentong" loading="lazy">
+                <a href="{{url('/', $client_slug) }}">
+                    <img src="{{ asset('assets/image/'.$client_slug.'/logo-gentong.png') }}" width="70%" height="auto" class="d-inline-block align-top" alt="logo-gentong" loading="lazy">
                 </a>
             </div>
             <ul class="list-unstyled components">
                 <li class="">
-                   <a href="{{ url('/') }}">Beranda</a>
-                   <input type="hidden" name="client_nm" id="client_nm" value="{{$client_name}}">
+                   <a href="{{ url('/', $client_slug) }}">Beranda</a>
+                   <input type="hidden" name="client_nm" id="client_nm" value="{{$client_slug}}">
                 </li>
                 <li>
                     <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Produk</a>
                     <ul class="collapse list-unstyled" id="pageSubmenu">
                         @foreach($categories as $key => $value)
                             <li>
-                                <a href="{{route('category.index', ['id'=>$value->id] )}}" style="font-size: 1.1em !important;">{{$value->name}}</a>
+                                <a href="{{route('category.index', ['id'=>$value->id, $client_slug] )}}" style="font-size: 1.1em !important;">{{$value->name}}</a>
                             </li>
                         @endforeach
                     </ul>
                 </li>
                 <li>
-                   <a href="{{URL::route('cara_belanja')}}">Cara Berbelanja</a>
+                   <a href="{{URL::route('cara_belanja', $client_slug)}}">Cara Berbelanja</a>
                 </li>
                 <li>
-                    <a href="{{URL::route('contact')}}">Kontak Kami</a>
+                    <a href="{{URL::route('contact', $client_slug)}}">Kontak Kami</a>
                 </li>
             </ul>
             <div class="mx-auto text-center" style="margin-top: 3/5px;">
@@ -556,9 +556,9 @@
                     </button>
                    
                     <a class="navbar-brand nav-center" href="{{ url('/') }}">
-                        <img src="{{ asset('assets/image/logo-gentong.png') }}" class="p-0 m-0 d-inline-block align-top" alt="logo-gentong" loading="lazy">
+                        <img src="{{ asset('assets/image/'.$client_slug.'/logo-gentong.png') }}" class="p-0 m-0 d-inline-block align-top" alt="logo-gentong" loading="lazy">
                     </a>
-                    <form action="{{route('search.index')}}" class="form-inline my-2 my-lg-0 ml-auto d-none d-md-inline-block">
+                    <form action="{{route('search.index', $client_slug)}}" class="form-inline my-2 my-lg-0 ml-auto d-none d-md-inline-block">
                         <div class="input-group">
                             <div class="input-group-append">
                                 <button class="btn  my-2 my-sm-0 search_botton_navbar" type="submit" id="button-search-addon" style="border-radius: 50%;"><i class="fa fa-search"></i></button>&nbsp;&nbsp;&nbsp;
@@ -600,7 +600,7 @@
         <footer id="footer">
             <div class="d-flex justify-content-center">
                 <div class="col-md-6">
-                    <img src="{{ asset('assets/image/logo-gentong.png') }}" class="img-thumbnail" style="background-color:transparent; border:none;" alt="logo-gentong"> 
+                    <img src="{{ asset('assets/image/'.$client_slug.'/logo-gentong.png') }}" class="img-thumbnail" style="background-color:transparent; border:none;" alt="logo-gentong"> 
                 </div>
             </div>
             <br><br>
@@ -627,7 +627,7 @@
             <div class="modal-content" style="background: #FDD8AF">
                 <div class="modal-body">
                     <div class="row justify-content-center">
-                        <form action="{{route('search.index')}}">
+                        <form action="{{route('search.index', $client_slug)}}">
                             <div class="input-group">
                                 <div class="input-group-append">
                                         <button class="btn search_botton_navbar" type="submit" id="" style="border-radius: 50%;"><i class="fa fa-search"></i></button>
@@ -754,6 +754,7 @@
         });
 
         function btn_code(){
+            var client = $('#client_nm').val();
             var voucher_code = document.getElementById("voucher_code").value;
             var x = document.getElementById("desc_code");
             if(voucher_code ==""){
@@ -775,7 +776,8 @@
                     }
                 });
                 $.ajax({
-                    url : '{{URL::to('/keranjang/search_vcode')}}',
+                    // url : '{{URL::to('/keranjang/search_vcode')}}',
+                    url : client+'/keranjang/search_vcode',
                     type:'POST',
                     data:{
                         code : voucher_code
@@ -873,6 +875,7 @@
         
         function pesan_wa()
         {
+            var client = $('#client_nm').val();
             var name = document.getElementById("name").value;
             var email = document.getElementById("email").value;
             var address = document.getElementById("address").value;
@@ -880,7 +883,8 @@
             var order_id = $('#order_id_cek').val();
             if (name != "" && email!="" && address !="" && phone !="" && phone.length > 9) {
                 $.ajax({
-                    url : '{{URL::to('/keranjang/cek_order')}}',
+                    // url : '{{URL::to('/keranjang/cek_order')}}',
+                    url : client+'/keranjang/cek_order',
                     type:'POST',
                     dataType: 'json',
                     data:{

@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends($client_slug.'.layouts.master')
 @section('title') Create Product @endsection
 @section('content')
 
@@ -8,7 +8,7 @@
 		</div>
 	@endif
 	<!-- Form Create -->
-    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('products.store')}}">
+    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('products.store', $client_slug)}}">
     	@csrf
         <div class="form-group form-float">
             <div class="form-line">
@@ -24,6 +24,7 @@
         </div>
 
         <h2 class="card-inside-title">Categories</h2>
+         <input type="hidden" name="client_nm" id="client_nm" value="{{$client_slug}}">
         <select name="categories"  id="categories" class="form-control"></select>
         <br>
         <h2 class="card-inside-title">Product Image</h2>
@@ -78,10 +79,12 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
 <script>
+    var client = $('#client_nm').val();
     $('#categories').select2({
       placeholder: 'Select an item',
       ajax: {
-        url: '{{URL::to('/ajax/categories/search')}}',
+        // url: '{{URL::to('/ajax/categories/search')}}',
+        url : '{{url("/ajax/categories/search")}}',
         processResults: function (data) {
           return {
             results:  $.map(data, function (item) {

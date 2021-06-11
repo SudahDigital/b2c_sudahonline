@@ -9,10 +9,10 @@ use App\Order;
 
 class WelcomeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {   
-        
-        return redirect('/home_customer');
+        $route = \Route::current()->parameter('client_id');
+        return redirect($route.'/');
         
      }
 }

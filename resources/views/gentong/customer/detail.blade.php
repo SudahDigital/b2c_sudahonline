@@ -1,4 +1,4 @@
-@extends('customer.layouts.template-nobanner')
+@extends('gentong.customer.layouts.template-nobanner')
 @section('content')
 
     <div class="container" style="margin-top: 80px;">

@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends($client_slug.'.layouts.master')
 @section('title') Edit Order @endsection
 @section('content')
 
@@ -8,7 +8,7 @@
 		</div>
 	@endif
 	<!-- Form Create -->
-    <form id="form_validation" method="POST" action="{{route('order_edit_update')}}">
+    <form id="form_validation" method="POST" action="{{route('order_edit_update', $client_slug)}}">
         @csrf
         
         <!--

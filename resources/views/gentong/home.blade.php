@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends($client_slug.'.layouts.master')
 @section('title') Home @endsection
 @section('content')
     @if (session('status'))

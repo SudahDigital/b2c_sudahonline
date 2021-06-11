@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends($client_slug.'.layouts.master')
 @section('title') Vouchers List @endsection
 @section('content')
 @if(session('status'))
@@ -7,7 +7,7 @@
 	</div>
 @endif
 
-<form action="{{route('vouchers.index')}}">
+<form action="{{route('vouchers.index', $client_slug)}}">
 	<div class="row">
 		<!--
 		<div class="col-md-3">
@@ -24,16 +24,16 @@
 		<div class="col-md-4">
 			<ul class="nav nav-tabs tab-col-pink pull-left" >
 				<li role="presentation" class="{{ Request::path() == 'vouchers' ? 'active' : ''}}">
-					<a href="{{route('vouchers.index')}}" aria-expanded="true" >All</a>
+					<a href="{{route('vouchers.index', $client_slug)}}" aria-expanded="true" >All</a>
 				</li>
 				<li role="presentation" class="">
-					<a href="{{route('vouchers.trash')}}">TRUSH</a>
+					<a href="{{route('vouchers.trash', $client_slug)}}">TRUSH</a>
 				</li>
 			</ul>
 		</div>
 		
 		<div class="col-md-8">
-			<a href="{{route('vouchers.create')}}" class="btn btn-success pull-right">Create Voucher</a>
+			<a href="{{route('vouchers.create', $client_slug)}}" class="btn btn-success pull-right">Create Voucher</a>
 		</div>
 		
 	</div>
@@ -97,7 +97,7 @@
 					@endphp
 				</td>
 				<td>
-					<a class="btn btn-info btn-xs" href="{{route('vouchers.edit',[$v->id])}}" style="margin-bottom:5px;"><i class="material-icons">edit</i></a>&nbsp;
+					<a class="btn btn-info btn-xs" href="{{route('vouchers.edit',[$v->id, $client_slug])}}" style="margin-bottom:5px;"><i class="material-icons">edit</i></a>&nbsp;
 					@if($v->uses !== NULL)
 					<button class="btn btn-danger btn-xs" disabled><i class="material-icons">delete</i></button>
 					@else
@@ -114,7 +114,7 @@
 		                           Delete this voucher ..? 
 		                        </div>
 		                        <div class="modal-footer">
-		                        	<form action="{{route('vouchers.destroy',[$v->id])}}" method="POST">
+		                        	<form action="{{route('vouchers.destroy',[$v->id, $client_slug])}}" method="POST">
 										@csrf
 										<input type="hidden" name="_method" value="DELETE">
 										<button type="submit" class="btn btn-link waves-effect">Delete</button>

@@ -10,6 +10,15 @@ use App\Order;
 class ProductDetailController extends Controller
 {
     public function detail(Request $request){
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$request->client_id'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
         $ses_id = $request->header('User-Agent');
         $clientIP = \Request::getClientIp(true);
         $session_id = $ses_id.$clientIP;
@@ -41,8 +50,8 @@ class ProductDetailController extends Controller
                     ->where('session_id','=',"$session_id")
                     ->whereNull('username')
                     ->count();
-        $data=['total_item'=> $total_item, 'keranjang'=>$keranjang, 'product'=>$product,'item'=>$item,'item_name'=>$item_name,'count_data'=>$count_data,'categories'=>$categories,];
+        $data=['total_item'=> $total_item, 'keranjang'=>$keranjang, 'product'=>$product,'item'=>$item,'item_name'=>$item_name,'count_data'=>$count_data,'categories'=>$categories,'client_slug'=>$clientNM];
         
-        return view('customer.detail',$data);
+        return view($clientNM.'.customer.detail',$data);
     }
 }

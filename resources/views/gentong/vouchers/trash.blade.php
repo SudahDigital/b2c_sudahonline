@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends($client_slug.'.layouts.master')
 @section('title') Vouchers List @endsection
 @section('content')
 @if(session('status'))
@@ -7,7 +7,7 @@
 	</div>
 @endif
 
-<form action="{{route('vouchers.index')}}">
+<form action="{{route('vouchers.index', $client_slug)}}">
 	<div class="row">
 		<!--
 		<div class="col-md-3">
@@ -24,16 +24,16 @@
 		<div class="col-md-4">
 			<ul class="nav nav-tabs tab-col-pink pull-left" role="tablist">
 				<li role="presentation" class="{{ Request::path() == 'vouchers' ? 'active' : ''}}">
-					<a href="{{route('vouchers.index')}}" aria-expanded="true" >All</a>
+					<a href="{{route('vouchers.index', $client_slug)}}" aria-expanded="true" >All</a>
 				</li>
 				
 				<li role="presentation" class="active">
-					<a href="{{route('vouchers.trash')}}">TRUSH</a>
+					<a href="{{route('vouchers.trash', $client_slug)}}">TRUSH</a>
 				</li>
 			</ul>
 		</div>
 		<div class="col-md-8">
-			<a href="{{route('vouchers.create')}}" class="btn btn-success pull-right">Create Voucher</a>
+			<a href="{{route('vouchers.create', $client_slug)}}" class="btn btn-success pull-right">Create Voucher</a>
 		</div>
 	</div>
 </form>	
@@ -110,7 +110,7 @@
 		                           Delete permanent this voucher ..? 
 		                        </div>
 		                        <div class="modal-footer">
-		                        	<form action="{{route('vouchers.delete-permanent',[$v->id])}}" method="POST">
+		                        	<form action="{{route('vouchers.delete-permanent',[$v->id, $client_slug])}}" method="POST">
 										@csrf
 										<input type="hidden" name="_method" value="DELETE">
 										<button type="submit" class="btn btn-link waves-effect">Delete</button>
@@ -133,7 +133,7 @@
 							</div>
 							<div class="modal-footer">
 								
-									<a href="{{route('vouchers.restore', [$v->id])}}" class="btn bg-deep-orange">Restore</a>
+									<a href="{{route('vouchers.restore', [$v->id, $client_slug])}}" class="btn bg-deep-orange">Restore</a>
 									<button type="button" class="btn bg-deep-orange" data-dismiss="modal">Close</button>
 								
 							</div>

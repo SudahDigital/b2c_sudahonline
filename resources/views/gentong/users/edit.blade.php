@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends($client_slug.'.layouts.master')
 @section('title') Edit User @endsection
 @section('content')
 
@@ -8,7 +8,7 @@
 		</div>
 	@endif
 	<!-- Form Create -->
-    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('users.update',[$user->id])}}">
+    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('users.update',[$user->id, $client_slug])}}">
     	@csrf
         <input type="hidden" name="_method" value="PUT">
         <div class="form-group form-float">
@@ -95,7 +95,7 @@
         </div>
 
         <button class="btn btn-primary waves-effect" type="submit">SUBMIT</button>&nbsp;
-        <a href="{{route('users.index')}}" class="btn bg-deep-orange waves-effect" >&nbsp;CLOSE&nbsp;</a>
+        <a href="{{route('users.index', $client_slug)}}" class="btn bg-deep-orange waves-effect" >&nbsp;CLOSE&nbsp;</a>
     </form>
 
     <!-- #END#  -->		

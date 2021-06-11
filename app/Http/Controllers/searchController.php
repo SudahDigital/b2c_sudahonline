@@ -14,6 +14,16 @@ class searchController extends Controller
      */
     public function index(Request $request)
     {
+            $client = \Route::current()->parameter('client_id');
+            $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
+
+            $clientID = $clientNM = "";
+            if(count($sql_client) > 0){
+                $clientID = $sql_client[0]->client_id;
+                $clientNM = $sql_client[0]->client_slug;
+            }
             $ses_id = $request->header('User-Agent');
             $clientIP = \Request::getClientIp(true);
             $session_id = $ses_id.$clientIP;
@@ -23,8 +33,8 @@ class searchController extends Controller
             $keyword = $request->get('keyword') ? $request->get('keyword') : '';
             $categories = \App\Category::get();
             $cat_count = $categories->count();
-            $top_product = \App\product::with('categories')->where('top_product','=','1')->orderBy('top_product','DESC')->get();
-            $product = \App\product::with('categories')->where("description", "LIKE", "%$keyword%")->paginate(6);
+            $top_product = \App\product::with('categories')->where('top_product','=','1')->where('client_id','=',$clientID)->orderBy('top_product','DESC')->get();
+            $product = \App\product::with('categories')->where("description", "LIKE", "%$keyword%")->where('client_id','=',$clientID)->paginate(6);
             $count_data = $product->count();
             $top_count = $top_product->count();
             $keranjang = DB::select("SELECT orders.session_id, orders.status, orders.username, 
@@ -39,17 +49,20 @@ class searchController extends Controller
                         ->where('session_id','=',"$session_id")
                         ->where('orders.status','=','SUBMIT')
                         ->whereNull('username')
+                        ->where('orders.client_id','=',$clientID)
                         ->first();
             $item_name = DB::table('orders')
                         ->join('order_product','order_product.order_id','=','orders.id')
                         ->where('session_id','=',"$session_id")
                         ->whereNull('username')
+                        ->where('orders.client_id','=',$clientID)
                         ->first();
             
             $total_item = DB::table('orders')
                         ->join('order_product','order_product.order_id','=','orders.id')
                         ->where('session_id','=',"$session_id")
                         ->whereNull('username')
+                        ->where('orders.client_id','=',$clientID)
                     ->count();
             $data=['total_item'=> $total_item, 
             'keranjang'=>$keranjang, 
@@ -62,9 +75,10 @@ class searchController extends Controller
             'categories'=>$categories,
             'cat_count'=>$cat_count,
             'banner_active'=>$banner_active,
-            'banner'=>$banner];
+            'banner'=>$banner,
+            'client_slug'=>$clientNM];
        
-        return view('customer.content_customer',$data);
+        return view($clientNM.'.customer.content_customer',$data);
 
     }
 

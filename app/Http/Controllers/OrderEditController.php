@@ -16,17 +16,35 @@ class OrderEditController extends Controller
         });
     }
     
-    public function edit($id){
+    public function edit($id, $client){
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
         $order = \App\Order::findOrFail($id);
         $products = \App\product::get();
-        return view('orders.edit_order', ['order' => $order],['products' => $products]);
+        return view($clientNM.'.orders.edit_order', ['order' => $order],['products' => $products, 'client_slug' => $clientNM]);
     }
 
-    public function update(Request $request){
+    public function update(Request $request, $client){
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
         if(count($request->id) > 0) {
             $sum = 0;
             foreach ($request->id as $i => $v){
-                $product = \App\product::where('id',$request->product_id[$i])->first();
+                $product = \App\product::where('id',$request->product_id[$i])->where('client_id','=',$clientID)->first();
                 $data_order=array(
                     'product_id'=>$request->product_id[$i],
                     'price_item'=>$product->price,
@@ -35,7 +53,7 @@ class OrderEditController extends Controller
                     'quantity'=>$request->quantity[$i],
                 );
                 $price = $product->price - ($product->price * ($product->discount / 100));
-                $order_product = \App\order_product::where('id',$request->id[$i])->first();
+                $order_product = \App\order_product::where('id',$request->id[$i])->where('client_id','=',$clientID)->first();
                 $order_product->update($data_order);
                 $jm = $price * $request->quantity[$i];
                 $sum += $jm;
@@ -46,6 +64,7 @@ class OrderEditController extends Controller
                         $no_disc = DB::table('order_product')
                                     ->where('order_product.order_id','=',$request->get('order_id'))
                                     ->where('order_product.discount_item','=','0')//->get();
+                                    ->where('order_product.client_id','=',$clientID)
                                     ->sum(DB::raw('order_product.price_item * order_product.quantity'));
                         if( $vouchers->type == 1){
                             $potongan = $no_disc * ($vouchers->discount_amount / 100);
@@ -84,7 +103,7 @@ class OrderEditController extends Controller
                     $order->status = $request->get('status');
                     $order->save();
                     if($order->save()){
-                        $cek_quantity = \App\Order::with('products')->where('id',$request->get('order_id'))->get();
+                        $cek_quantity = \App\Order::with('products')->where('client_id','=',$clientID)->where('id',$request->get('order_id'))->get();
                         foreach($cek_quantity as $q){
                             foreach($q->products as $p){
                                 $up_product = \App\product::findOrfail($p->pivot->product_id);
@@ -96,6 +115,6 @@ class OrderEditController extends Controller
                 }
         }
 
-        return redirect()->route('orders.index')->with('status', 'Order status succesfully updated');
+        return redirect()->route('orders.index', $clientNM)->with('status', 'Order status succesfully updated');
     }
 }

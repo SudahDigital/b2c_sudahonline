@@ -1,4 +1,4 @@
-@extends('customer.layouts.template-nobanner')
+@extends($client_slug.'.customer.layouts.template-nobanner')
 @section('content')
     <div class="container" style="margin-top:80px;">
         <div class="row align-middle">

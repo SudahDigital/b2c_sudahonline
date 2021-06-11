@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends($client_slug.'.layouts.master')
 @section('title') Edit Stock @endsection
 @section('content')
 
@@ -8,7 +8,7 @@
 		</div>
 	@endif
 	<!-- Form Create -->
-    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('products.update_lowstock')}}">
+    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('products.update_lowstock', $client_slug)}}">
     	@csrf
         <div class="form-group form-float">
             <div class="form-line">

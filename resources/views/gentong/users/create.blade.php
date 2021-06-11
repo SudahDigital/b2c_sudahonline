@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends($client_slug.'.layouts.master')
 @section('title') Create User @endsection
 @section('content')
 
@@ -13,7 +13,7 @@
 		</div>
     @endif
     <!-- Form Create -->
-    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('users.store')}}">
+    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('users.store', $client_slug)}}">
     	@csrf
         <div class="form-group form-float">
             <div class="form-line">

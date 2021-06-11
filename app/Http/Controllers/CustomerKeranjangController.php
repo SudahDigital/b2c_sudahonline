@@ -16,13 +16,13 @@ class CustomerKeranjangController extends Controller
     public function index(Request $request)
     {  
         $sql_client = DB::select("SELECT clients.client_id, 
-                    clients.client_name FROM clients 
-                    WHERE clients.client_name = '$request->client_id'"); 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$request->client_id'"); 
 
         $clientID = $clientNM = "";
         if(count($sql_client) > 0){
             $clientID = $sql_client[0]->client_id;
-            $clientNM = $sql_client[0]->client_name;
+            $clientNM = $sql_client[0]->client_slug;
         }
 
         // $tes = \Route::current()->parameter('client_id');
@@ -77,19 +77,19 @@ class CustomerKeranjangController extends Controller
                 'cat_count'=>$cat_count,
                 'banner'=>$banner,
                 'banner_active'=>$banner_active,
-                'client_name'=>$clientNM];
+                'client_slug'=>$clientNM];
        return view($clientNM.'.customer.content_customer',$data);
     }
     
     public function simpan(Request $request){ 
         $sql_client = DB::select("SELECT clients.client_id, 
-                    clients.client_name FROM clients 
-                    WHERE clients.client_name = '$request->client_id'"); 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$request->client_id'"); 
 
         $clientID = $clientNM = "";
         if(count($sql_client) > 0){
             $clientID = $sql_client[0]->client_id;
-            $clientNM = $sql_client[0]->client_name;
+            $clientNM = $sql_client[0]->client_slug;
         }
         $ses_id = $request->header('User-Agent');
         $clientIP = \Request::getClientIp(true);
@@ -98,7 +98,7 @@ class CustomerKeranjangController extends Controller
         $id_product = $request->get('Product_id');
         $quantity=$request->get('quantity');
         $price=$request->get('price');
-        $cek_promo = product::findOrFail($id_product);
+        $cek_promo = product::where('client_id', $clientID)->findOrFail($id_product);
         $cek_order = Order::where('session_id','=',"$id")
         ->where('status','=','SUBMIT')->where('client_id','=',$clientID)->whereNull('username')->first();
         if($cek_order !== null){
@@ -158,13 +158,13 @@ class CustomerKeranjangController extends Controller
 
     public function min_order(Request $request){ 
         $sql_client = DB::select("SELECT clients.client_id, 
-                    clients.client_name FROM clients 
-                    WHERE clients.client_name = '$request->client_id'"); 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$request->client_id'"); 
 
         $clientID = $clientNM = "";
         if(count($sql_client) > 0){
             $clientID = $sql_client[0]->client_id;
-            $clientNM = $sql_client[0]->client_name;
+            $clientNM = $sql_client[0]->client_slug;
         }
         $ses_id = $request->header('User-Agent');
         $clientIP = \Request::getClientIp(true);
@@ -173,7 +173,7 @@ class CustomerKeranjangController extends Controller
         $id_product = $request->get('Product_id');
         $quantity=$request->get('quantity');
         $price=$request->get('price');
-        $cek_promo = product::findOrFail($id_product);
+        $cek_promo = product::where('client_id', $clientID)->findOrFail($id_product);
         $cek_order = Order::where('session_id','=',"$id")
         ->where('status','=','SUBMIT')->where('client_id','=',$clientID)->whereNull('username')->first();
         if($cek_order !== null){
@@ -212,18 +212,18 @@ class CustomerKeranjangController extends Controller
     public function tambah(Request $request){
         
         $sql_client = DB::select("SELECT clients.client_id, 
-                    clients.client_name FROM clients 
-                    WHERE clients.client_name = '$request->client_id'"); 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$request->client_id'"); 
 
         $clientID = $clientNM = "";
         if(count($sql_client) > 0){
             $clientID = $sql_client[0]->client_id;
-            $clientNM = $sql_client[0]->client_name;
+            $clientNM = $sql_client[0]->client_slug;
         }   
         $id = $request->get('id_detil');
         $order_id = $request->get('order_id');
-        $order_product = order_product::findOrFail($id);
-        $cek_promo = product::findOrFail($order_product->product_id);
+        $order_product = order_product::where('client_id', $clientID)->findOrFail($id);
+        $cek_promo = product::where('client_id', $clientID)->findOrFail($order_product->product_id);
         $order_product->quantity += 1;
         $order_product->price_item = $cek_promo->price;
         $order_product->price_item_promo = $cek_promo->price_promo;
@@ -231,7 +231,7 @@ class CustomerKeranjangController extends Controller
         $order_product->client_id = $clientID;
         $order_product->save();
         if($order_product->save()){
-                $order = Order::findOrFail($order_id);
+                $order = Order::where('client_id', $clientID)->findOrFail($order_id);
                 $order->total_price += $request->get('price');
                 $order->save();
         }
@@ -244,17 +244,17 @@ class CustomerKeranjangController extends Controller
 
     public function kurang(Request $request){
         $sql_client = DB::select("SELECT clients.client_id, 
-                    clients.client_name FROM clients 
-                    WHERE clients.client_name = '$request->client_id'"); 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$request->client_id'"); 
 
         $clientID = $clientNM = "";
         if(count($sql_client) > 0){
             $clientID = $sql_client[0]->client_id;
-            $clientNM = $sql_client[0]->client_name;
+            $clientNM = $sql_client[0]->client_slug;
         }
         $id = $request->get('id_detil');
         $order_id = $request->get('order_id');
-        $order_product = order_product::findOrFail($id);
+        $order_product = order_product::where('client_id', $clientID)->findOrFail($id);
 
         if($order_product->quantity < 2){
             $delete = DB::table('order_product')->where('id', $id)->where('client_id','=',$clientID)->delete();   
@@ -265,7 +265,7 @@ class CustomerKeranjangController extends Controller
                     DB::table('orders')->where('id', $order_id)->where('client_id','=',$clientID)->delete();
                 }
                 else{
-                        $order = Order::findOrFail($order_id);
+                        $order = Order::where('client_id', $clientID)->findOrFail($order_id);
                         $order->total_price -= $request->get('price');
                         $order->client_id = $clientID;
                         $order->save();
@@ -275,7 +275,7 @@ class CustomerKeranjangController extends Controller
         }
         else{
 
-            $order_product = order_product::findOrFail($id);
+            $order_product = order_product::where('client_id', $clientID)->findOrFail($id);
             $cek_promo = product::findOrFail($order_product->product_id);
             $order_product->price_item = $cek_promo->price;
             $order_product->price_item_promo = $cek_promo->price_promo;
@@ -284,7 +284,7 @@ class CustomerKeranjangController extends Controller
             $order_product->client_id = $clientID;
             $order_product->save();
             if($order_product->save()){
-                $order = Order::findOrFail($order_id);
+                $order = Order::where('client_id', $clientID)->findOrFail($order_id);
                 $order->total_price -= $request->get('price');
                 $order->client_id = $clientID;
                 $order->save();
@@ -297,14 +297,15 @@ class CustomerKeranjangController extends Controller
     public function delete(Request $request){
         
         $sql_client = DB::select("SELECT clients.client_id, 
-                    clients.client_name FROM clients 
-                    WHERE clients.client_name = '$request->client_id'"); 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$request->client_id'"); 
 
         $clientID = $clientNM = "";
         if(count($sql_client) > 0){
             $clientID = $sql_client[0]->client_id;
-            $clientNM = $sql_client[0]->client_name;
+            $clientNM = $sql_client[0]->client_slug;
         }
+
         $id = $request->get('id');
         $product_id = $request->get('product_id');
         $order_id = $request->get('order_id');
@@ -320,7 +321,7 @@ class CustomerKeranjangController extends Controller
                         else{
                              $delete2 = DB::table('order_product')->where('id', $id)->where('client_id','=',$clientID)->delete();
                              if($delete2){
-                                $orders = Order::findOrFail($order_id);
+                                $orders = Order::where('client_id', $clientID)->findOrFail($order_id);
                                 $total_price = $price * $quantity;
                                 $orders->total_price -= $total_price;
                                 $orders->save();
@@ -331,13 +332,13 @@ class CustomerKeranjangController extends Controller
 
     public function pesan(Request $request){
         $sql_client = DB::select("SELECT clients.client_id, 
-                    clients.client_name FROM clients 
-                    WHERE clients.client_name = '$request->client_id'"); 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$request->client_id'"); 
 
         $clientID = $clientNM = "";
         if(count($sql_client) > 0){
             $clientID = $sql_client[0]->client_id;
-            $clientNM = $sql_client[0]->client_name;
+            $clientNM = $sql_client[0]->client_slug;
         }
         $id = $request->get('id');
         $cek_order = DB::select("SELECT order_product.order_id, order_product.product_id,order_product.quantity, 
@@ -347,10 +348,10 @@ class CustomerKeranjangController extends Controller
         if($count_cek > 0){
             return view('errors/error_wa');
         }else{
-            $cek_quantity = Order::with('products')->where('id',$id)->get();
+            $cek_quantity = Order::with('products')->where('id',$id)->where('client_id',$clientID)->get();
             foreach($cek_quantity as $q){
                 foreach($q->products as $p){
-                    $up_product = product::findOrfail($p->pivot->product_id);
+                    $up_product = product::where('client_id', $clientID)->findOrfail($p->pivot->product_id);
                     $up_product->stock -= $p->pivot->quantity;
                     $up_product->save();
                     }
@@ -359,7 +360,7 @@ class CustomerKeranjangController extends Controller
             $email = $request->get('email');
             $address = $request->get('address');
             $phone = $request->get('phone');
-            $orders = Order::findOrfail($id);
+            $orders = Order::where('client_id', $clientID)->findOrfail($id);
             $orders->username = $username;
             $orders->email = $email;
             $orders->address = $address;
@@ -382,7 +383,7 @@ class CustomerKeranjangController extends Controller
                 $code_name = $vouchers_cek->name;
                 $type = $vouchers_cek->type;
                 $disc_amount = $vouchers_cek->discount_amount;
-                $vouchers = \App\Voucher::findOrFail($vouchers_cek->id);
+                $vouchers = \App\Voucher::where('client_id', $clientID)->findOrFail($vouchers_cek->id);
                 $vouchers->uses +=1;
                 $vouchers->save();
             }
@@ -404,13 +405,13 @@ class CustomerKeranjangController extends Controller
                         ->join('orders','order_product.order_id','=','orders.id')
                         ->join('products','order_product.product_id','=','products.id')
                         ->where('orders.id','=',"$id")
-                        ->where('client_id','=',$clientID)
+                        ->where('orders.client_id','=',$clientID)
                         ->get();
                 foreach($pesan as $key=>$wa){
                     $href.='*'.$wa->description.'%20(Qty %3A%20'.$wa->quantity.' Pcs)%0A';
                 }
                 $text_wa=$href.'%0A'.$info_harga;
-                $url = "https://api.whatsapp.com/send?phone=6282311988000&text=$text_wa";
+                $url = "https://api.whatsapp.com/send?phone=6282311988000&text=$text_wa"; //6282311988000
                 return Redirect::to($url);
                 
             }
@@ -421,13 +422,13 @@ class CustomerKeranjangController extends Controller
 
     public function voucher_code(Request $request){
         $sql_client = DB::select("SELECT clients.client_id, 
-                    clients.client_name FROM clients 
-                    WHERE clients.client_name = '$request->client_id'"); 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$request->client_id'"); 
 
         $clientID = $clientNM = "";
         if(count($sql_client) > 0){
             $clientID = $sql_client[0]->client_id;
-            $clientNM = $sql_client[0]->client_name;
+            $clientNM = $sql_client[0]->client_slug;
         }
         $keyword = $request->get('code');
         $vouchers = \App\Voucher::where('code','LIKE BINARY',"%$keyword%")->where('client_id','=',$clientID)->count();
@@ -446,13 +447,13 @@ class CustomerKeranjangController extends Controller
 
     public function apply_code(Request $request){
         $sql_client = DB::select("SELECT clients.client_id, 
-                    clients.client_name FROM clients 
-                    WHERE clients.client_name = '$request->client_id'"); 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$request->client_id'"); 
 
         $clientID = $clientNM = "";
         if(count($sql_client) > 0){
             $clientID = $sql_client[0]->client_id;
-            $clientNM = $sql_client[0]->client_name;
+            $clientNM = $sql_client[0]->client_slug;
         }
         $keyword = $request->get('code');
         $vouchers = \App\Voucher::where('code','=',"$keyword")->where('client_id','=',$clientID)->first();
@@ -462,7 +463,7 @@ class CustomerKeranjangController extends Controller
         $total_item = DB::table('orders')
                     ->join('order_product','order_product.order_id','=','orders.id')
                     ->where('session_id','=',"$session_id")
-                    ->where('client_id','=',$clientID)
+                    ->where('orders.client_id','=',$clientID)
                     ->whereNull('orders.username')
                     ->count();
         if ($total_item < 1){
@@ -515,25 +516,25 @@ class CustomerKeranjangController extends Controller
         $keranjang = \App\Order::with('products')
                     ->where('status','=','SUBMIT')
                     ->where('session_id','=',"$session_id")
-                    ->where('client_id','=',$clientID)
+                    ->where('orders.client_id','=',$clientID)
                     ->whereNull('username')->get();
         $item = DB::table('orders')
                     ->where('session_id','=',"$session_id")
                     ->where('orders.status','=','SUBMIT')
-                    ->where('client_id','=',$clientID)
+                    ->where('orders.client_id','=',$clientID)
                     ->whereNull('orders.username')
                     ->first();
         $item_name = DB::table('orders')
                     ->join('order_product','order_product.order_id','=','orders.id')
                     ->where('session_id','=',"$session_id")
-                    ->where('client_id','=',$clientID)
+                    ->where('orders.client_id','=',$clientID)
                     ->whereNotNull('orders.username')
                     ->first();
         $no_disc = DB::table('products')
                     ->join('order_product','products.id','=','order_product.product_id')
                     ->where('order_product.order_id','=',"$item->id")
                     ->where('products.discount','=','0')//->get();
-                    ->where('client_id','=',$clientID)
+                    ->where('products.client_id','=',$clientID)
                     ->sum(DB::raw('products.price * order_product.quantity'));
                     //->sum('products.price');
                     //->first();
@@ -715,13 +716,13 @@ class CustomerKeranjangController extends Controller
     public function ajax_cart(Request $request)
     {   
         $sql_client = DB::select("SELECT clients.client_id, 
-                    clients.client_name FROM clients 
-                    WHERE clients.client_name = '$request->client_id'"); 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$request->client_id'"); 
 
         $clientID = $clientNM = "";
         if(count($sql_client) > 0){
             $clientID = $sql_client[0]->client_id;
-            $clientNM = $sql_client[0]->client_name;
+            $clientNM = $sql_client[0]->client_slug;
         }
 
         $ses_id = $request->header('User-Agent');
@@ -950,18 +951,18 @@ class CustomerKeranjangController extends Controller
 
     public function cek_order(Request $request){
         $sql_client = DB::select("SELECT clients.client_id, 
-                    clients.client_name FROM clients 
-                    WHERE clients.client_name = '$request->client_id'"); 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$request->client_id'"); 
 
         $clientID = $clientNM = "";
         if(count($sql_client) > 0){
             $clientID = $sql_client[0]->client_id;
-            $clientNM = $sql_client[0]->client_name;
+            $clientNM = $sql_client[0]->client_slug;
         }
         $order_id = $request->get('order_id');
         $cek_order = DB::select("SELECT order_product.order_id, order_product.product_id,order_product.quantity, 
                     products.stock, products.description FROM products,order_product WHERE order_product.product_id = products.id AND 
-                    order_product.quantity > products.stock AND order_product.order_id = '$order_id' AND order_product = '$clientID'");
+                    order_product.quantity > products.stock AND order_product.order_id = '$order_id' AND order_product.client_id = '$clientID'");
         //$count_cek = count($cek_order);
         //return $cek_order;
         // Fetch all records

@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends($client_slug.'.layouts.master')
 @section('title') Details Order @endsection
 @section('content')
 
@@ -8,7 +8,7 @@
 		</div>
 	@endif
 	<!-- Form Create -->
-    <form id="form_validation" method="POST" action="{{route('orders.update', [$order->id])}}">
+    <form id="form_validation" method="POST" action="{{route('orders.update', [$order->id, $client_slug])}}">
         @csrf
         <input type="hidden" name="_method" value="PUT">
         <!--

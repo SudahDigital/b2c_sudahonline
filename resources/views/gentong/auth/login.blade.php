@@ -1,4 +1,4 @@
-@extends('customer.layouts.template-nobanner')
+@extends($client_slug.'.customer.layouts.template-nobanner')
 @section('content')
     <div class="container" style="margin-top: 70px;">
         <div class="row align-middle">
@@ -19,7 +19,7 @@
             
         <div class="row justify-content-center">
             <div class="col-sm-8">
-                <form method="POST" action="{{ route('login') }}">
+                <form method="POST" action="{{ route('login', $client_slug) }}">
                     @csrf
                     <div class="card mx-auto contact_card" style="border-radius:15px;">
                         <div class="card-body">
@@ -54,7 +54,7 @@
                     </div>
                     <!--
                     <div class="col-md-12 login-label text-center" style="margin-top:20px;">
-                         <p>Don't have an account..? <a style="color:#6a3137; font-size:20px; font-weight:900;" href="{{ route('register') }}">Sign Up</a></p>
+                         <p>Don't have an account..? <a style="color:#6a3137; font-size:20px; font-weight:900;" href="{{ route('register', $client_slug) }}">Sign Up</a></p>
                     </div>
                     -->
                     <div class="col-md-12 mx-auto text-center">

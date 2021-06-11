@@ -6,7 +6,7 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <title>MT-Gentong @yield('title')</title>
     <!-- Favicon-->
-    <link rel="icon" href="{{ asset('assets/image/logo-gentong-nav.png')}}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('assets/image/'.$client_slug.'/logo-gentong-nav.png')}}" type="image/x-icon">
 
     <!-- Google Fonts -->
     <link href="{{asset('bsb/googleapis.css?family=Roboto:400,700&subset=latin,cyrillic-ext')}}" rel="stylesheet" type="text/css">
@@ -126,7 +126,7 @@
                                 <li role="separator" class="divider"></li>
                                 -->
                                 
-                                    <form action="{{route('logout')}}" method="POST">
+                                    <form action="{{route('logout', $client_slug)}}" method="POST">
                                     @csrf   
                                         <button class="btn btn-default ">
                                                 &nbsp;<i class="material-icons">input</i>
@@ -151,7 +151,7 @@
                 <ul class="list">
                     <li class="header">MAIN NAVIGATION</li>
                     <li class="{{ request()->routeIs('home') ? 'active' : '' }}">
-                        <a href="{{route('home')}}">
+                        <a href="{{route('home', $client_slug)}}">
                             <i class="material-icons">home</i>
                             <span>Home</span>
                         </a>
@@ -165,7 +165,7 @@
                         </a>
                         <ul class="ml-menu">
                             <li class="{{request()->routeIs('users.index') ? 'active' : '' }}">
-                                <a href="{{route('users.index')}}">List User</a>
+                                <a href="{{route('users.index', $client_slug)}}">List User</a>
                             </li>
                         </ul>
                     </li>
@@ -178,7 +178,7 @@
                         </a>
                         <ul class="ml-menu">
                             <li class="{{request()->routeIs('banner.index') ? 'active' : '' }}">
-                                <a href="{{route('banner.index')}}">List Slide Banner</a>
+                                <a href="{{route('banner.index', $client_slug)}}">List Slide Banner</a>
                             </li>
                         </ul>
                     </li>
@@ -190,7 +190,7 @@
                         </a>
                         <ul class="ml-menu">
                             <li class="{{request()->routeIs('categories.index') ? 'active' : '' }}">
-                                <a href="{{route('categories.index')}}">Categories</a>
+                                <a href="{{route('categories.index', $client_slug)}}">Categories</a>
                             </li>
                         </ul>
                     </li>
@@ -202,7 +202,7 @@
                         </a>
                         <ul class="ml-menu">
                             <li class="{{request()->routeIs('products.index') ? 'active' : '' }}">
-                                <a href="{{route('products.index')}}">Products</a>
+                                <a href="{{route('products.index', $client_slug)}}">Products</a>
                             </li>
                         </ul>
                         
@@ -215,7 +215,7 @@
                         </a>
                         <ul class="ml-menu">
                             <li class="{{request()->routeIs('vouchers.index') ? 'active' : '' }}">
-                                <a href="{{route('vouchers.index')}}">Vouchers</a>
+                                <a href="{{route('vouchers.index', $client_slug)}}">Vouchers</a>
                             </li>
                         </ul>
                     </li>
@@ -227,7 +227,7 @@
                         </a>
                         <ul class="ml-menu">
                             <li class="{{request()->routeIs('orders.index') ? 'active' : '' }}">
-                                <a href="{{route('orders.index')}}">Orders</a>
+                                <a href="{{route('orders.index', $client_slug)}}">Orders</a>
                             </li>
                         </ul>
                     </li>

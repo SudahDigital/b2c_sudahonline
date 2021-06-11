@@ -16,6 +16,16 @@ class filterProductController extends Controller
      */
     public function index(Request $request)
     {
+        $client = \Route::current()->parameter('client_id');
+        $sql_client = DB::select("SELECT clients.client_id, 
+                clients.client_slug FROM clients 
+                WHERE clients.client_slug = '$client'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
         $ses_id = $request->header('User-Agent');
         $clientIP = \Request::getClientIp(true);
         $session_id = $ses_id.$clientIP;
@@ -66,9 +76,10 @@ class filterProductController extends Controller
         'categories'=>$categories,
         'cat_count'=>$cat_count,
         'banner_active'=>$banner_active,
-        'banner'=>$banner];
+        'banner'=>$banner,
+        'client_slug'=>$clientNM];
 
-        return view('customer.content_customer',$data);
+        return view($clientNM.'.customer.content_customer',$data);
     }
 
     /**

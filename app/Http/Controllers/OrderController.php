@@ -24,17 +24,27 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$request->client_id'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
         $status = $request->get('status');
         if($status){
         $orders = \App\Order::with('products')->whereNotNull('username')
         ->where('status',strtoupper($status))
+        ->where('client_id','=',$clientID)
         ->orderBy('id', 'DESC')->get();//paginate(10);
         }
         else{
-            $orders = \App\Order::with('products')->whereNotNull('username')
+            $orders = \App\Order::with('products')->where('client_id','=',$clientID)->whereNotNull('username')
             ->orderBy('id', 'DESC')->get();
         }
-        return view('orders.index', ['orders' => $orders]);
+        return view($clientNM.'.orders.index', ['orders' => $orders, 'client_slug'=>$clientNM]);
     }
 
     /**
@@ -87,8 +97,17 @@ class OrderController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, $client)
     {
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
         $order = \App\Order::findOrFail($id);
       
         $order->status = $request->get('status');
@@ -96,7 +115,7 @@ class OrderController extends Controller
         $order->save();
 
         if(($order->save()) && ($request->get('status') == 'CANCEL')){
-            $cek_quantity = \App\Order::with('products')->where('id',$id)->get();
+            $cek_quantity = \App\Order::with('products')->where('id',$id)->where('client_id','=',$clientID)->get();
             foreach($cek_quantity as $q){
                 foreach($q->products as $p){
                     $up_product = \App\product::findOrfail($p->pivot->product_id);
@@ -106,7 +125,7 @@ class OrderController extends Controller
                 }
         }
       
-        return redirect()->route('orders.detail', [$order->id])->with('status', 'Order status succesfully updated');
+        return redirect()->route('orders.detail', [$order->id, $clientNM])->with('status', 'Order status succesfully updated');
     }
 
     /**
@@ -120,10 +139,19 @@ class OrderController extends Controller
         //
     }
 
-    public function detail($id)
+    public function detail($id, $client)
     {
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
         $order = \App\Order::findOrFail($id);
-        return view('orders.detail', ['order' => $order]);
+        return view($clientNM.'.orders.detail', ['order' => $order, 'client_slug'=>$clientNM]);
     }
 
     public function export_mapping() {

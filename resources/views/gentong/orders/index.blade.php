@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends($client_slug.'.layouts.master')
 @section('title') Order List @endsection
 @section('content')
 @if(session('status'))
@@ -7,29 +7,29 @@
 	</div>
 @endif
 
-<form action="{{route('products.index')}}">
+<form action="{{route('products.index', $client_slug)}}">
 	<div class="row">
 		<div class="col-md-6">
 			<ul class="nav nav-tabs tab-col-pink pull-left" >
 				<li role="presentation" class="{{Request::get('status') == NULL && Request::path() == 'orders' ? 'active' : ''}}">
-					<a href="{{route('orders.index')}}" aria-expanded="true" >All</a>
+					<a href="{{route('orders.index', $client_slug)}}" aria-expanded="true" >All</a>
 				</li>
 				<li role="presentation" class="{{Request::get('status') == 'submit' ?'active' : '' }}">
-					<a href="{{route('orders.index', ['status' =>'submit'])}}" >SUBMIT</a>
+					<a href="{{route('orders.index', ['status' =>'submit', $client_slug])}}" >SUBMIT</a>
 				</li>
 				<li role="presentation" class="{{Request::get('status') == 'process' ?'active' : '' }}">
-					<a href="{{route('orders.index', ['status' =>'process'])}}">PROCESS</a>
+					<a href="{{route('orders.index', ['status' =>'process', $client_slug])}}">PROCESS</a>
 				</li>
 				<li role="presentation" class="{{Request::get('status') == 'finish' ?'active' : '' }}">
-					<a href="{{route('orders.index', ['status' =>'finish'])}}">FINISH</a>
+					<a href="{{route('orders.index', ['status' =>'finish', $client_slug])}}">FINISH</a>
 				</li>
 				<li role="presentation" class="{{Request::get('status') == 'cancel' ?'active' : '' }}">
-					<a href="{{route('orders.index', ['status' =>'cancel'])}}">CANCEL</a>
+					<a href="{{route('orders.index', ['status' =>'cancel', $client_slug])}}">CANCEL</a>
 				</li>
 			</ul>
 		</div>
 		<div class="col-md-6">
-			<a href="{{route('orders.export_mapping')}}" class="btn btn-success pull-right">Export Excel</a>
+			<a href="{{route('orders.export_mapping', $client_slug)}}" class="btn btn-success pull-right">Export Excel</a>
 		</div>
 	</div>
 </form>	
@@ -82,12 +82,12 @@
 				<td>{{number_format($order->total_price)}}</td>
 				
 				<td>
-					<a class="btn btn-info btn-xs btn-block" href="{{route('orders.detail',[$order->id])}}">Details</a>&nbsp;
+					<a class="btn btn-info btn-xs btn-block" href="{{route('orders.detail',[$order->id, $client_slug])}}">Details</a>&nbsp;
 					@can('isSuperadmin')
 						@if($order->status == "CANCEL")
 						<a style="margin-top:0;" class="btn btn-success btn-xs btn-block disabled" href="" >Edit</a>&nbsp;
 						@else
-						<a style="margin-top:0;" class="btn btn-success btn-xs btn-block" href="{{route('order_edit',[$order->id])}}">Edit</a>&nbsp;
+						<a style="margin-top:0;" class="btn btn-success btn-xs btn-block" href="{{route('order_edit',[$order->id, $client_slug])}}">Edit</a>&nbsp;
 						@endif
 					@endcan
 				</td>

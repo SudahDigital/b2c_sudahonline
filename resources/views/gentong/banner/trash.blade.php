@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends($client_slug.'.layouts.master')
 @section('title') Trashed Banner Slide @endsection
 @section('content')
 
@@ -8,7 +8,7 @@
 	</div>
 @endif
 
-<form action="{{route('banner.index')}}">
+<form action="{{route('banner.index', $client_slug)}}">
 	<div class="row">
 		<!--
 		<div class="col-md-4">
@@ -25,15 +25,15 @@
 		<div class="col-md-4">
 			<ul class="nav nav-tabs tab-col-pink pull-left" >
 				<li role="presentation" class="">
-					<a href="{{route('banner.index')}}" aria-expanded="true" >All</a>
+					<a href="{{route('banner.index', $client_slug)}}" aria-expanded="true" >All</a>
 				</li>
 				<li role="presentation" class="active">
-					<a href="{{route('banner.trash')}}" >TRUSH</a>
+					<a href="{{route('banner.trash', $client_slug)}}" >TRUSH</a>
 				</li>
 			</ul>
 		</div>		
 		<div class="col-md-8">
-			<a href="{{route('banner.create')}}" class="btn btn-success pull-right">Create Banner</a>
+			<a href="{{route('banner.create', $client_slug)}}" class="btn btn-success pull-right">Create Banner</a>
 		</div>
 	</div>
 </form>
@@ -79,7 +79,7 @@
 		                        </div>
 		                        <div class="modal-footer">
 		                        	
-										<a href="{{route('banner.restore', [$c->id])}}" class="btn bg-deep-orange">Restore</a>
+										<a href="{{route('banner.restore', [$c->id, $client_slug])}}" class="btn bg-deep-orange">Restore</a>
 										<button type="button" class="btn bg-deep-orange" data-dismiss="modal">Close</button>
 									
 		                        </div>
@@ -98,7 +98,7 @@
 		                           Delete permanent this banner ..? 
 		                        </div>
 		                        <div class="modal-footer">
-		                        	<form action="{{route('banner.delete-permanent',[$c->id])}}" method="POST">
+		                        	<form action="{{route('banner.delete-permanent',[$c->id, $client_slug])}}" method="POST">
 										@csrf
 										<input type="hidden" name="_method" value="DELETE">
 										<button type="submit" class="btn btn-link waves-effect">Delete</button>

@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends($client_slug.'.layouts.master')
 @section('title') Edit Voucher @endsection
 @section('content')
 
@@ -8,7 +8,7 @@
 		</div>
 	@endif
 	<!-- Form Edit -->
-    <form id="form_validation" method="POST"  action="{{route('vouchers.update',[$voucher->id])}}">
+    <form id="form_validation" method="POST"  action="{{route('vouchers.update',[$voucher->id, $client_slug])}}">
         @csrf
         <input type="hidden" name="_method" value="PUT">
         <div class="form-group form-float">
@@ -86,7 +86,7 @@
         </div>
 
         <button class="btn btn-primary waves-effect" value="UPDATE" type="submit">UPDATE</button>
-        <a href="{{route('vouchers.index')}}" class="btn btn-warning waves-effect" >CLOSE</a>
+        <a href="{{route('vouchers.index', $client_slug)}}" class="btn btn-warning waves-effect" >CLOSE</a>
     </form>
     <!-- #END#  -->		
 

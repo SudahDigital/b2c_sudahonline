@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends($client_slug.'.layouts.master')
 @section('title') Edit Banner Slide @endsection
 @section('content')
 
@@ -8,7 +8,7 @@
 		</div>
 	@endif
 	<!-- Form Create -->
-    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('banner.update',[$banner_edit->id])}}">
+    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('banner.update',[$banner_edit->id, $client_slug])}}">
     	@csrf
         <input type="hidden" name="_method" value="PUT">
         <div class="form-group form-float">
@@ -39,7 +39,7 @@
         </div>
 
         <button class="btn btn-primary waves-effect" type="submit">EDIT</button>&nbsp;
-        <a href="{{route('banner.index')}}" class="btn bg-deep-orange waves-effect" >&nbsp;CLOSE&nbsp;</a>
+        <a href="{{route('banner.index', $client_slug)}}" class="btn bg-deep-orange waves-effect" >&nbsp;CLOSE&nbsp;</a>
     </form>
 
     <!-- #END#  -->		

@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends($client_slug.'.layouts.master')
 @section('title') Trashed Categories @endsection
 @section('content')
 
@@ -8,7 +8,7 @@
 	</div>
 @endif
 
-<form action="{{route('categories.index')}}">
+<form action="{{route('categories.index', $client_slug)}}">
 	<div class="row">
 		<!--
 		<div class="col-md-4">
@@ -25,15 +25,15 @@
 		<div class="col-md-4">
 			<ul class="nav nav-tabs tab-col-pink pull-left" >
 				<li role="presentation" class="">
-					<a href="{{route('categories.index')}}" aria-expanded="true" >All</a>
+					<a href="{{route('categories.index', $client_slug)}}" aria-expanded="true" >All</a>
 				</li>
 				<li role="presentation" class="active">
-					<a href="{{route('categories.trash')}}" >TRUSH</a>
+					<a href="{{route('categories.trash', $client_slug)}}" >TRUSH</a>
 				</li>
 			</ul>
 		</div>		
 		<div class="col-md-8">
-			<a href="{{route('categories.create')}}" class="btn btn-success pull-right">Create Category</a>
+			<a href="{{route('categories.create', $client_slug)}}" class="btn btn-success pull-right">Create Category</a>
 		</div>
 	</div>
 </form>
@@ -79,7 +79,7 @@
 		                        </div>
 		                        <div class="modal-footer">
 		                        	
-										<a href="{{route('categories.restore', [$c->id])}}" class="btn bg-deep-orange">Restore</a>
+										<a href="{{route('categories.restore', [$c->id, $client_slug])}}" class="btn bg-deep-orange">Restore</a>
 										<button type="button" class="btn bg-deep-orange" data-dismiss="modal">Close</button>
 									
 		                        </div>
@@ -98,7 +98,7 @@
 		                           Delete permanent this category ..? 
 		                        </div>
 		                        <div class="modal-footer">
-		                        	<form action="{{route('categories.delete-permanent',[$c->id])}}" method="POST">
+		                        	<form action="{{route('categories.delete-permanent',[$c->id, $client_slug])}}" method="POST">
 										@csrf
 										<input type="hidden" name="_method" value="DELETE">
 										<button type="submit" class="btn btn-link waves-effect">Delete</button>

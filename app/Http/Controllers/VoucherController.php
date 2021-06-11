@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class VoucherController extends Controller
@@ -21,18 +22,27 @@ class VoucherController extends Controller
      */
     public function index(Request $request)
     {
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$request->client_id'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
         $status = $request->get('status');
         $keyword = $request->get('keyword') ? $request->get('keyword') : '';
         if($status){
-        $vouchers = \App\Voucher::where('name','LIKE',"%$keyword%")
+        $vouchers = \App\Voucher::where('name','LIKE',"%$keyword%")->where('client_id','=',$clientID)
         ->where('status',strtoupper($status))->get();//->paginate(10);
         }
         else
             {
-            $vouchers = \App\Voucher::where('name','LIKE',"%$keyword%")->get();
+            $vouchers = \App\Voucher::where('name','LIKE',"%$keyword%")->where('client_id','=',$clientID)->get();
             //->paginate(10);
             }
-        return view('vouchers.index', ['vouchers'=> $vouchers]);
+        return view($clientNM.'.vouchers.index', ['vouchers'=> $vouchers, 'client_slug'=> $clientNM]);
     }
 
     /**
@@ -40,9 +50,18 @@ class VoucherController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($client)
     {
-        return view('vouchers.create');
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
+        return view($clientNM.'.vouchers.create', ['client_slug'=> $clientNM]);
     }
 
     /**
@@ -51,8 +70,17 @@ class VoucherController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $client)
     {
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
         $new_voucher = new \App\Voucher;
         $new_voucher->code = $request->get('code');
         $new_voucher->name = $request->get('name');
@@ -63,11 +91,12 @@ class VoucherController extends Controller
         //$newDate = date("Y-m-d", strtotime($originalDate));
         $new_voucher->expires_at = $originalDate;
         $new_voucher->max_uses = $request->get('max_uses');
+        $new_voucher->client_id = $clientID;
         $new_voucher->save();
 
         if($request->get('save_action') == 'SAVE'){
           return redirect()
-                ->route('vouchers.create')
+                ->route('vouchers.create', $clientNM)
                 ->with('status', 'Vouchers successfully saved');
         }
     }
@@ -89,10 +118,19 @@ class VoucherController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id, $client)
     {
-        $voucher = \App\Voucher::findOrFail($id);
-        return view('vouchers.edit', ['voucher' => $voucher]);
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
+        $voucher = \App\Voucher::where('client_id', $clientID)->findOrFail($id);
+        return view($clientNM.'.vouchers.edit', ['voucher' => $voucher, 'client_slug'=> $clientNM]);
     }
 
     /**
@@ -102,9 +140,18 @@ class VoucherController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, $client)
     {
-        $voucher = \App\Voucher::findOrFail($id);
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
+        $voucher = \App\Voucher::where('client_id', $clientID)->findOrFail($id);
         $voucher->name = $request->get('name');
         $voucher->description = $request->get('description');
         $voucher->code = $request->get('code');
@@ -114,8 +161,9 @@ class VoucherController extends Controller
         //newDate = date("Y-m-d", strtotime($originalDate));
         $voucher->expires_at = $originalDate;
         $voucher->max_uses = $request->get('max_uses');
+        $voucher->client_id = $clientID;
         $voucher->save();
-        return redirect()->route('vouchers.edit', [$voucher->id])->with('status',
+        return redirect()->route('vouchers.edit', [$voucher->id, $clientNM])->with('status',
         'Voucher successfully updated');
     }
 
@@ -125,18 +173,36 @@ class VoucherController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, $client)
     {
-        $vouchers = \App\Voucher::findOrFail($id);
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
+        $vouchers = \App\Voucher::where('client_id', $clientID)->findOrFail($id);
         $vouchers->delete();
-        return redirect()->route('vouchers.index')->with('status', 'Voucher moved to
+        return redirect()->route('vouchers.index', $clientNM)->with('status', 'Voucher moved to
         trash');
     }
 
-    public function trash(){
+    public function trash($client){
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
+
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
         $vouchers = \App\Voucher::onlyTrashed()->get();//->paginate(10);
 
-        return view('vouchers.trash', ['vouchers' => $vouchers]);
+        return view($clientNM.'.vouchers.trash', ['vouchers' => $vouchers, 'client_slug'=>$clientNM]);
     }
 
     public function ajaxSearch(Request $request){
@@ -149,25 +215,41 @@ class VoucherController extends Controller
           }
     }
 
-    public function restore($id){
+    public function restore($id, $client){
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
 
-        $voucher = \App\Voucher::withTrashed()->findOrFail($id);
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
+        $voucher = \App\Voucher::where('client_id', $clientID)->withTrashed()->findOrFail($id);
         if($voucher->trashed()){
             $voucher->restore();
-        return redirect()->route('vouchers.trash')->with('status', 'Voucher successfully restored');
+        return redirect()->route('vouchers.trash', $clientNM)->with('status', 'Voucher successfully restored');
         } else {
-        return redirect()->route('vouchers.trash')->with('status', 'Voucher is not in trash');
+        return redirect()->route('vouchers.trash', $clientNM)->with('status', 'Voucher is not in trash');
         }
     }
 
-    public function deletePermanent($id){
+    public function deletePermanent($id, $client){
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug FROM clients 
+                    WHERE clients.client_slug = '$client'"); 
 
-        $voucher = \App\Voucher::withTrashed()->findOrFail($id);
+        $clientID = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientNM = $sql_client[0]->client_slug;
+        }
+        $voucher = \App\Voucher::where('client_id', $clientID)->withTrashed()->findOrFail($id);
         if(!$voucher->trashed()){
-        return redirect()->route('vouchers.trash')->with('status', 'Voucher is not in trash!')->with('status_type', 'alert');
+        return redirect()->route('vouchers.trash', $clientNM)->with('status', 'Voucher is not in trash!')->with('status_type', 'alert');
         } else {
         $voucher->forceDelete();
-        return redirect()->route('vouchers.trash')->with('status', 'Voucher permanently deleted!');
+        return redirect()->route('vouchers.trash', $clientNM)->with('status', 'Voucher permanently deleted!');
         }
 
     }

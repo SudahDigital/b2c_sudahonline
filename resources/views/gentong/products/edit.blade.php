@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends($client_slug.'.layouts.master')
 @section('title') Edit Product @endsection
 @section('content')
 
@@ -8,7 +8,7 @@
 		</div>
 	@endif
 	<!-- Form Create -->
-    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('products.update',[$product->id])}}">
+    <form id="form_validation" method="POST" enctype="multipart/form-data" action="{{route('products.update',[$product->id, $client_slug])}}">
         @csrf
         <input type="hidden" name="_method" value="PUT">
         <div class="form-group form-float">

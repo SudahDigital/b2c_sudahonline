@@ -23,6 +23,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('/home');
+        $route = \Route::current()->parameter('client_id');
+        return view($route.'/gentong/home',['client_slug'=>'gentong']);
     }
 }

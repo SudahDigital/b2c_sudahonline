@@ -1,4 +1,4 @@
-@extends('gentong.customer.layouts.template')
+@extends($client_slug.'.customer.layouts.template')
 @section('content')
 
     <!--menu categories-->
@@ -49,7 +49,7 @@
                     </div>
                     <div id="demo" class="collapse" style="">
                         <div class="col-md-12" style="margin-bottom: 20px;">
-                        <a href="{{url('/home_customer')}}" type="button" class="btn button_add_to_cart button-collapse mb=3">Semua Produk</a>
+                        <a href="{{url('/'.$client_slug)}}" type="button" class="btn button_add_to_cart button-collapse mb=3">Semua Produk</a>
                         @foreach($categories as $key => $value)
                             <a href="{{route('category.index', ['id'=>$value->id] )}}" type="button" class="btn button_add_to_cart button-collapse mb-3">{{$value->name}}</a>
                         @endforeach
@@ -57,9 +57,9 @@
                     </div>
                     @else
                     <div class="col-md-12 mb-2" style="">
-                        <a href="{{url('/home_customer')}}" type="button" class="btn button_add_to_cart button-collapse mb-3">Semua Produk</a>
+                        <a href="{{url('/'.$client_slug)}}" type="button" class="btn button_add_to_cart button-collapse mb-3">Semua Produk</a>
                         @foreach($categories as $key => $value)
-                            <a href="{{route('category.index', ['id'=>$value->id] )}}" type="button" class="btn button_add_to_cart button-collapse mb-3">{{$value->name}}</a>
+                            <a href="{{route('category.index', ['id'=>$value->id, $client_slug] )}}" type="button" class="btn button_add_to_cart button-collapse mb-3">{{$value->name}}</a>
                         @endforeach
                     </div>
                     @endif
@@ -81,7 +81,7 @@
                                 @if($value_top->discount > 0)
                                 <div class="ribbon"><span class="span-ribbon">{{$value_top->discount}}% OFF</span></div>
                                 @endif
-                                <a href="{{URL::route('product_detail', ['id'=>$value_top->id])}}">
+                                <a href="{{URL::route('product_detail', ['id'=>$value_top->id, $client_slug])}}">
                                     <img style="" src="{{ asset('storage/'.(($value_top->image!='') ? $value_top->image : '20200621_184223_0016.jpg').'') }}" class="img-fluid h-150 w-100 img-responsive" alt="...">
                                 </a>
                                 <div class="float-left px-1 py-2" style="width: 100%;">
@@ -211,7 +211,7 @@
                             @if($value->discount > 0)
                             <div class="ribbon"><span class="span-ribbon">{{$value->discount}}% OFF</span></div>
                             @endif
-                            <a href="{{URL::route('product_detail', ['id'=>$value->id])}}">
+                            <a href="{{URL::route('product_detail', ['id'=>$value->id, $client_slug])}}">
                                 <img style="" src="{{ asset('storage/'.(($value->image!='') ? $value->image : '20200621_184223_0016.jpg').'') }}" class="img-fluid h-150 w-100 img-responsive" alt="...">
                             </a>
                             <div class="float-left px-1 py-2" style="width: 100%;">
@@ -452,7 +452,7 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
-                <form method="POST" target="_BLANK" action="{{ route('customer.keranjang.pesan') }}">
+                <form method="POST" target="_BLANK" action="{{ route('customer.keranjang.pesan', $client_slug) }}">
                     {{ csrf_field() }}
                     
                 <div class="modal-body">
