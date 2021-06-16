@@ -21,9 +21,10 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
         $route = \Route::current()->parameter('client_id');
-        return view($route.'/gentong/home',['client_slug'=>'gentong']);
+        return redirect()->route('adminhome');
+        // return view($route.'/gentong/home',['client_slug'=>'gentong']);
     }
 }

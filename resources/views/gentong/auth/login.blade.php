@@ -19,7 +19,7 @@
             
         <div class="row justify-content-center">
             <div class="col-sm-8">
-                <form method="POST" action="{{ route('login', $client_slug) }}">
+                <form method="POST" action="{{ route('adminhome', [$client_slug]) }}">
                     @csrf
                     <div class="card mx-auto contact_card" style="border-radius:15px;">
                         <div class="card-body">

@@ -126,7 +126,7 @@
                                 <li role="separator" class="divider"></li>
                                 -->
                                 
-                                    <form action="{{route('logout', $client_slug)}}" method="POST">
+                                    <form action="{{route('logoutadmin', $client_slug)}}" method="POST">
                                     @csrf   
                                         <button class="btn btn-default ">
                                                 &nbsp;<i class="material-icons">input</i>

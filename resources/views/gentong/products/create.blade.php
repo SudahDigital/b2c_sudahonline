@@ -78,13 +78,14 @@
 @section('footer-scripts')
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
-<script>
+<script type="text/javascript">
     var client = $('#client_nm').val();
     $('#categories').select2({
       placeholder: 'Select an item',
       ajax: {
         // url: '{{URL::to('/ajax/categories/search')}}',
-        url : '{{url("/ajax/categories/search")}}',
+        url : '{{url("/ajax/search_categories")}}',
+        data:{'client':client},
         processResults: function (data) {
           return {
             results:  $.map(data, function (item) {
