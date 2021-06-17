@@ -56,5 +56,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('manage-banner', function($user){
             return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
         });
+
+        Gate::define('manage-contact', function($user){
+            return count(array_intersect(["SUPERADMIN", "ADMIN"], json_decode($user->roles)));
+        });
     }
 }

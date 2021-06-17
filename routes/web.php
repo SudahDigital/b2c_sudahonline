@@ -122,7 +122,7 @@ Route::prefix('/{client_id}/')->group(function () {
         $categories = \App\Category::get();
         return view($route.'.auth.login',['categories'=>$categories, 'client_slug'=>$route]);
     });
-    Route::post('/adminhome', 'LoginAdminController@index')->name('adminhome');
+    Route::get('/adminhome', 'LoginAdminController@index')->name('adminhome');
     Route::post('/logout', 'LoginAdminController@logoutadmin')->name('logoutadmin');
     Route::get('/banner/trash', 'BannerController@trash')->name('banner.trash');
     Route::get('/banner/{id}/restore', 'BannerController@restore')->name('banner.restore');

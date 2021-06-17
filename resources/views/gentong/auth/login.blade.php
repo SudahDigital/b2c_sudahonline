@@ -19,7 +19,7 @@
             
         <div class="row justify-content-center">
             <div class="col-sm-8">
-                <form method="POST" action="{{ route('adminhome', [$client_slug]) }}">
+                <form method="POST" action="{{ route('login', [$client_slug]) }}">
                     @csrf
                     <div class="card mx-auto contact_card" style="border-radius:15px;">
                         <div class="card-body">
@@ -58,7 +58,9 @@
                     </div>
                     -->
                     <div class="col-md-12 mx-auto text-center">
-                        <button type="submit" class="btn btn_login_form" >{{ __('Sign In') }}
+                        <!--<button type="submit" class="btn btn_login_form" >{{ __('Sign In') }}
+                        </button>-->
+                        <button type="submit" class="btn btn_login_form" >Sign In
                         </button>
                     </div>
                 </form>

@@ -63,6 +63,7 @@ class LoginController extends Controller
     public function showLoginForm()
     {
         $categories = \App\Category::get();    
-        return view('auth.login', ['categories'=> $categories]);
+        // return view('auth.login', ['categories'=> $categories]);
+        return redirect()->route('home');
     }
 }

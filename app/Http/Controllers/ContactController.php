@@ -9,12 +9,12 @@ use Illuminate\Support\Facades\DB;
 class ContactController extends Controller
 {
     public function __construct(){
-        // $this->middleware(function($request, $next){
+        $this->middleware(function($request, $next){
             
-        //     if(Gate::allows('manage-contact')) return $next($request);
+            if(Gate::allows('manage-contact')) return $next($request);
 
-        //     abort(403, 'Anda tidak memiliki cukup hak akses');
-        // });
+            abort(403, 'Anda tidak memiliki cukup hak akses');
+        });
     }
     /**
      * Display a listing of the resource.
