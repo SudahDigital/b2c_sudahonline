@@ -231,6 +231,18 @@
                             </li>
                         </ul>
                     </li>
+
+                    <li class="{{request()->routeIs('contacts.index') ? 'active' : ''}}">
+                        <a href="javascript:void(0);" class="menu-toggle">
+                            <i class="material-icons">phone</i>
+                            <span>Manage Contact</span>
+                        </a>
+                        <ul class="ml-menu">
+                            <li class="{{request()->routeIs('contact.index') ? 'active' : '' }}">
+                                <a href="{{route('contacts.index', $client_slug)}}">Contact</a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
             <!-- #Menu -->

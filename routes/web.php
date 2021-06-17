@@ -155,6 +155,7 @@ Route::prefix('/{client_id}/')->group(function () {
     Route::get('/vouchers/{id}/restore', 'voucherController@restore')->name('vouchers.restore');
     Route::delete('/vouchers/{vouchers}/delete-permanent','voucherController@deletePermanent')->name('vouchers.delete-permanent');
     Route::resource('vouchers','VoucherController');
+    Route::resource('contacts','ContactController');
     
 });
 
