@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -90,7 +91,17 @@ Route::prefix('/{client_id}/')->group(function () {
     Route::get('/contact', function(){
             $route = \Route::current()->parameter('client_id');
             $categories = \App\Category::get(); 
-            return view($route.'.customer.contact',['categories'=>$categories, 'client_slug'=>$route]);
+
+            $sql_wa = DB::table('clients')
+                        ->where('client_slug','=',$route)
+                        ->get();
+            $no_contact = "";
+            foreach($sql_wa as $key=>$wa){
+                $no_contact .= $wa->client_number_contact;
+            }
+            $number_contact = "62".$no_contact;
+
+            return view($route.'.customer.contact',['categories'=>$categories, 'client_slug'=>$route, 'number_contact'=>$number_contact]);
             })->name('contact');
     Route::get('/cara-belanja', function(){
         $route = \Route::current()->parameter('client_id');

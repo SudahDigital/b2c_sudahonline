@@ -411,7 +411,16 @@ class CustomerKeranjangController extends Controller
                     $href.='*'.$wa->description.'%20(Qty %3A%20'.$wa->quantity.' Pcs)%0A';
                 }
                 $text_wa=$href.'%0A'.$info_harga;
-                $url = "https://api.whatsapp.com/send?phone=6282311988000&text=$text_wa"; //6282311988000
+                $sql_wa = DB::table('clients')
+                            ->where('client_id','=',$clientID)
+                            ->get();
+                $no_wa = "";
+                foreach($sql_wa as $key=>$wa){
+                    $no_wa .= $wa->client_number_wa;
+                }
+                $number_wa = "62".$no_wa;
+
+                $url = "https://api.whatsapp.com/send?phone=$number_wa&text=$text_wa"; //6282311988000
                 return Redirect::to($url);
                 
             }

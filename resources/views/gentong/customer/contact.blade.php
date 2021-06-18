@@ -23,7 +23,7 @@
                                 </div>
                                 <div class="col col-md-9">
                                     <p class="card-title telp">Telepon</p>
-                                    <h5 class="card-title no_telp">‭082311988000‬</h5>
+                                    <h5 class="card-title no_telp">‭+{{ $number_contact }}</h5>
                                 </div>
                             </div>
                         </div>
