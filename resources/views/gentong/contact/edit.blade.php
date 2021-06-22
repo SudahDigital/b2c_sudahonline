@@ -30,10 +30,16 @@
                 </div>
                 <div class="col-sm-10">
                    <div class="form-group form-float">
-                        <div class="form-line col-6">
-                            <input type="text" class="form-control" value="{{$contact_1}}" name="contact_no" autocomplete="off" required>
-                            <label class="form-label">Contact Number</label>
+                        <div class="form-line">
+                            <div class="input-group">
+                                <span class="input-group-addon">+62</span>
+                                <input id="phone_whatsapp" type="text" class="form-control" placeholder="Whatsapp  (Ex: 81211111111)" 
+                                name="phone_whatsapp" onkeypress="return isNumberKey(event)" 
+                                value="{{old('phone_whatsapp')}}" autocomplete="off" required>
+                            </div>
+                            
                         </div>
+                        <div class="help-info">Min.10, Max. 13 Characters</div>
                     </div>
 
                     <div class="form-group form-float">
