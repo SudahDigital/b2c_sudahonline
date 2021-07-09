@@ -11,13 +11,14 @@ class ProductDetailController extends Controller
 {
     public function detail(Request $request){
         $sql_client = DB::select("SELECT clients.client_id, 
-                    clients.client_slug FROM clients 
+                    clients.client_slug, clients.client_name FROM clients 
                     WHERE clients.client_slug = '$request->client_id'"); 
 
-        $clientID = $clientNM = "";
+        $clientID = $clientSL = $clientNM = "";
         if(count($sql_client) > 0){
             $clientID = $sql_client[0]->client_id;
-            $clientNM = $sql_client[0]->client_slug;
+            $clientSL = $sql_client[0]->client_slug;
+            $clientNM = $sql_client[0]->client_name;
         }
         $ses_id = $request->header('User-Agent');
         $clientIP = \Request::getClientIp(true);
@@ -50,8 +51,9 @@ class ProductDetailController extends Controller
                     ->where('session_id','=',"$session_id")
                     ->whereNull('username')
                     ->count();
-        $data=['total_item'=> $total_item, 'keranjang'=>$keranjang, 'product'=>$product,'item'=>$item,'item_name'=>$item_name,'count_data'=>$count_data,'categories'=>$categories,'client_slug'=>$clientNM];
+        $data=['total_item'=> $total_item, 'keranjang'=>$keranjang, 'product'=>$product,'item'=>$item,'item_name'=>$item_name,'count_data'=>$count_data,'categories'=>$categories,'client_slug'=>$clientSL,'client_name'=>$clientNM];
         
-        return view($clientNM.'.customer.detail',$data);
+        // return view($clientNM.'.customer.detail',$data);
+        return view('customer.detail',$data);
     }
 }

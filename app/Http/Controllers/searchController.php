@@ -78,7 +78,8 @@ class searchController extends Controller
             'banner'=>$banner,
             'client_slug'=>$clientNM];
        
-        return view($clientNM.'.customer.content_customer',$data);
+        // return view($clientNM.'.customer.content_customer',$data);
+            return view('customer.content_customer',$data);
 
     }
 

@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Support\Facades\Crypt;
 
 class LoginController extends Controller
 {
@@ -55,6 +56,7 @@ class LoginController extends Controller
     protected function credentials(Request $request)
     {
         //return $request->only($this->username(), 'password');
+        $password = Crypt::encrypt($request->password);
         return ['email'=>$request->{
             $this->username()
         }, 'password'=>$request->password, 'status'=>'ACTIVE'];

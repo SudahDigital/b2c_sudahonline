@@ -33,8 +33,9 @@ class ContactController extends Controller
             $clientNM = $sql_client[0]->client_slug;
         }
 
-        $contact = DB::select("SELECT client_id AS id, client_number_contact, client_number_wa FROM clients WHERE client_id='".$clientID."'");
-        return view($clientNM.'.contact.index', ['contact'=>$contact, 'client_slug'=>$clientNM]);
+        $contact = DB::select("SELECT client_id AS id, client_number_contact, client_number_wa, client_email, barcode_image FROM clients WHERE client_id='".$clientID."'");
+        // return view($clientNM.'.contact.index', ['contact'=>$contact, 'client_slug'=>$clientNM]);
+        return view('contact.index', ['contact'=>$contact, 'client_slug'=>$clientNM]);
     }
 
     /**
@@ -54,8 +55,9 @@ class ContactController extends Controller
             $clientNM = $sql_client[0]->client_slug;
         }
 
-        $contact_edit = DB::select("SELECT client_id AS id, client_number_contact, client_number_wa FROM clients WHERE client_id='".$clientID."' ");
-        return view($clientNM.'.contact.edit',['contact_id'=>$contact_edit[0]->id, 'contact_1'=>$contact_edit[0]->client_number_contact,'contact_2'=>$contact_edit[0]->client_number_wa, 'client_slug'=>$clientNM]);
+        $contact_edit = DB::select("SELECT client_id AS id, client_number_contact, client_number_wa, client_email, barcode_image FROM clients WHERE client_id='".$clientID."' ");
+        // return view($clientNM.'.contact.edit',['contact_id'=>$contact_edit[0]->id, 'contact_1'=>$contact_edit[0]->client_number_contact,'contact_2'=>$contact_edit[0]->client_number_wa, 'client_slug'=>$clientNM , 'client_email'=>$contact_edit[0]->client_email, 'barcode_image'=>$contact_edit[0]->barcode_image]);
+        return view('contact.edit',['contact_id'=>$contact_edit[0]->id, 'contact_1'=>$contact_edit[0]->client_number_contact,'contact_2'=>$contact_edit[0]->client_number_wa, 'client_slug'=>$clientNM , 'client_email'=>$contact_edit[0]->client_email, 'barcode_image'=>$contact_edit[0]->barcode_image]);
     }
 
     /**
@@ -78,15 +80,31 @@ class ContactController extends Controller
             $clientNM = $sql_client[0]->client_slug;
         }
 
+        $barcode = $file_name = "";
+        if(isset($_FILES['barcode'])){
+            $errors= array();
+            $file_name = $_FILES['barcode']['name'];
+            $file_size = $_FILES['barcode']['size'];
+            $file_tmp = $_FILES['barcode']['tmp_name'];
+            $file_type = $_FILES['barcode']['type'];
+
+            $barcode = ",barcode_image = '".$file_name."'";
+        }
+
         $update = "UPDATE clients SET 
     					client_number_contact = '".$request->contact_no."',
-    					client_number_wa = '".$request->wa_no."'
+    					client_number_wa = '".$request->wa_no."',
+                        client_email = '".$request->client_email."'
+                        $barcode
     				WHERE client_id = '".$clientID."'
     			";
 
     	$contact = DB::update($update);
 
     	if($contact){
+            if($file_name!=""){
+                move_uploaded_file($file_tmp,"assets/image/".$clientNM."/".$file_name);
+            }
         	return redirect()->route('contacts.edit', [$id, $clientNM])->with('status','Contact Succsessfully Updated');
     	}
         

@@ -38,7 +38,8 @@ class CategoryController extends Controller
         if($keyword){
             $categories = \App\Category::where('name','LIKE',"%$keyword%")->where('client_id','=',$clientID)->get();//paginate(10);
         }
-        return view($clientNM.'.category.index', ['categories'=>$categories, 'client_slug'=>$clientNM]);
+        // return view($clientNM.'.category.index', ['categories'=>$categories, 'client_slug'=>$clientNM]);
+        return view('category.index', ['categories'=>$categories, 'client_slug'=>$clientNM]);
     }
 
     /**
@@ -57,7 +58,8 @@ class CategoryController extends Controller
             $clientID = $sql_client[0]->client_id;
             $clientNM = $sql_client[0]->client_slug;
         }
-        return view($clientNM.'.category.create', ['client_slug'=>$clientNM]);
+        // return view($clientNM.'.category.create', ['client_slug'=>$clientNM]);
+        return view('category.create', ['client_slug'=>$clientNM]);
     }
 
     /**
@@ -120,7 +122,8 @@ class CategoryController extends Controller
             $clientNM = $sql_client[0]->client_slug;
         }
         $cat_edit = \App\Category::where('client_id', $clientID)->findOrFail($id);
-        return view($clientNM.'.category.edit',['cat_edit'=>$cat_edit, 'client_slug'=>$clientNM]);
+        // return view($clientNM.'.category.edit',['cat_edit'=>$cat_edit, 'client_slug'=>$clientNM]);
+        return view('category.edit',['cat_edit'=>$cat_edit, 'client_slug'=>$clientNM]);
     }
 
     /**
@@ -198,7 +201,8 @@ class CategoryController extends Controller
         }
         $deleted_category = \App\Category::onlyTrashed()->get();//paginate(10);
 
-        return view($clientNM.'.category.trash', ['categories' => $deleted_category, 'client_slug'=>$clientNM]);
+        // return view($clientNM.'.category.trash', ['categories' => $deleted_category, 'client_slug'=>$clientNM]);
+        return view('category.trash', ['categories' => $deleted_category, 'client_slug'=>$clientNM]);
     }
 
     public function restore($id, $client)

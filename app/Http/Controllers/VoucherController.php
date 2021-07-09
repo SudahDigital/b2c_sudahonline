@@ -42,7 +42,8 @@ class VoucherController extends Controller
             $vouchers = \App\Voucher::where('name','LIKE',"%$keyword%")->where('client_id','=',$clientID)->get();
             //->paginate(10);
             }
-        return view($clientNM.'.vouchers.index', ['vouchers'=> $vouchers, 'client_slug'=> $clientNM]);
+        // return view($clientNM.'.vouchers.index', ['vouchers'=> $vouchers, 'client_slug'=> $clientNM]);
+            return view('vouchers.index', ['vouchers'=> $vouchers, 'client_slug'=> $clientNM]);
     }
 
     /**
@@ -61,7 +62,8 @@ class VoucherController extends Controller
             $clientID = $sql_client[0]->client_id;
             $clientNM = $sql_client[0]->client_slug;
         }
-        return view($clientNM.'.vouchers.create', ['client_slug'=> $clientNM]);
+        // return view($clientNM.'.vouchers.create', ['client_slug'=> $clientNM]);
+        return view('vouchers.create', ['client_slug'=> $clientNM]);
     }
 
     /**
@@ -130,7 +132,8 @@ class VoucherController extends Controller
             $clientNM = $sql_client[0]->client_slug;
         }
         $voucher = \App\Voucher::where('client_id', $clientID)->findOrFail($id);
-        return view($clientNM.'.vouchers.edit', ['voucher' => $voucher, 'client_slug'=> $clientNM]);
+        // return view($clientNM.'.vouchers.edit', ['voucher' => $voucher, 'client_slug'=> $clientNM]);
+        return view('vouchers.edit', ['voucher' => $voucher, 'client_slug'=> $clientNM]);
     }
 
     /**
@@ -202,7 +205,8 @@ class VoucherController extends Controller
         }
         $vouchers = \App\Voucher::onlyTrashed()->get();//->paginate(10);
 
-        return view($clientNM.'.vouchers.trash', ['vouchers' => $vouchers, 'client_slug'=>$clientNM]);
+        // return view($clientNM.'.vouchers.trash', ['vouchers' => $vouchers, 'client_slug'=>$clientNM]);
+        return view('vouchers.trash', ['vouchers' => $vouchers, 'client_slug'=>$clientNM]);
     }
 
     public function ajaxSearch(Request $request){

@@ -16,13 +16,14 @@ class CustomerKeranjangController extends Controller
     public function index(Request $request)
     {  
         $sql_client = DB::select("SELECT clients.client_id, 
-                    clients.client_slug FROM clients 
+                    clients.client_slug, clients.client_name FROM clients 
                     WHERE clients.client_slug = '$request->client_id'"); 
 
-        $clientID = $clientNM = "";
+        $clientID = $clientSL = $clientNM = "";
         if(count($sql_client) > 0){
             $clientID = $sql_client[0]->client_id;
-            $clientNM = $sql_client[0]->client_slug;
+            $clientSL = $sql_client[0]->client_slug;
+            $clientNM = $sql_client[0]->client_name;
         }
 
         // $tes = \Route::current()->parameter('client_id');
@@ -77,8 +78,10 @@ class CustomerKeranjangController extends Controller
                 'cat_count'=>$cat_count,
                 'banner'=>$banner,
                 'banner_active'=>$banner_active,
-                'client_slug'=>$clientNM];
-       return view($clientNM.'.customer.content_customer',$data);
+                'client_slug'=>$clientSL,
+                'client_name'=>$clientNM];
+       // return view($clientNM.'.customer.content_customer',$data);
+        return view('customer.content_customer',$data);
     }
     
     public function simpan(Request $request){ 

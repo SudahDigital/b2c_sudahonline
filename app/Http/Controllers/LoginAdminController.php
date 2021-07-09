@@ -40,15 +40,28 @@ class LoginAdminController extends Controller
         }
         $categories = \App\Category::get();    
         // return redirect()->route('adminhome', $clientNM);
-        return view($clientNM.'.home', ['categories'=> $categories,'client_slug'=> $clientNM]);
+        // return view($clientNM.'.home', ['categories'=> $categories,'client_slug'=> $clientNM]);
+        // echo "jalan2".$client;exit();
+        return view('home', ['categories'=> $categories,'client_slug'=> $clientNM]);
     }
 
-    public function logoutadmin(Request $reauest)
+    public function logoutadmin(Request $request)
     {
     	Auth::logout();
     	$categories = \App\Category::get();    
         $route = \Route::current()->parameter('client_id');
-        return view($route.'.auth.login', ['categories'=> $categories, 'client_slug'=> $route]);
-        // return redirect()->route('adminhome', ['categories'=> $categories, 'client_slug'=> $route] );
+
+        $sql_client = DB::select("SELECT clients.client_id, 
+                    clients.client_slug, clients.client_name FROM clients 
+                    WHERE clients.client_slug = '$route'"); 
+
+        $clientID = $clientSL = $clientNM = "";
+        if(count($sql_client) > 0){
+            $clientID = $sql_client[0]->client_id;
+            $clientSL = $sql_client[0]->client_slug;
+            $clientNM = $sql_client[0]->client_name;
+        }
+        return view('admin.auth.login', ['categories'=> $categories, 'client_slug'=> $route, 'client_name'=> $clientNM]);
+        // return view($route.'.auth.login', ['categories'=> $categories, 'client_slug'=> $route]);
     }
 }

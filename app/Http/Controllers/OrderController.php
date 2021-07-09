@@ -44,7 +44,8 @@ class OrderController extends Controller
             $orders = \App\Order::with('products')->where('client_id','=',$clientID)->whereNotNull('username')
             ->orderBy('id', 'DESC')->get();
         }
-        return view($clientNM.'.orders.index', ['orders' => $orders, 'client_slug'=>$clientNM]);
+        // return view($clientNM.'.orders.index', ['orders' => $orders, 'client_slug'=>$clientNM]);
+        return view('orders.index', ['orders' => $orders, 'client_slug'=>$clientNM]);
     }
 
     /**
@@ -151,7 +152,8 @@ class OrderController extends Controller
             $clientNM = $sql_client[0]->client_slug;
         }
         $order = \App\Order::findOrFail($id);
-        return view($clientNM.'.orders.detail', ['order' => $order, 'client_slug'=>$clientNM]);
+        // return view($clientNM.'.orders.detail', ['order' => $order, 'client_slug'=>$clientNM]);
+        return view('orders.detail', ['order' => $order, 'client_slug'=>$clientNM]);
     }
 
     public function export_mapping() {

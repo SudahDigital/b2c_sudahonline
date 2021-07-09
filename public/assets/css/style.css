@@ -156,8 +156,8 @@ a:focus {
 }
 
 .navbar {
-    padding-top: 30px;
-    padding-bottom: 30px;
+    padding-top: 50px;
+    padding-bottom: 50px;
     background-color: #FFE1C0 !important;
     border: none;
     border-radius: 0;
@@ -552,7 +552,7 @@ button.search-sidebar:hover {
   line-height: 1.36;
   letter-spacing: normal;
   text-align: center;
-  color: #6a3137;
+  color: #009973;
 }
 
 .login-label p{

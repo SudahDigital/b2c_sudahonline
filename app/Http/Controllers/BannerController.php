@@ -40,7 +40,8 @@ class BannerController extends Controller
         if($keyword){
             $banner = \App\Banner::where('name','LIKE',"%$keyword%")->where('client_id','=',$clientID)->get();//paginate(10);
         }
-        return view($clientNM.'.banner.index', ['banner'=>$banner, 'client_slug'=>$clientNM]);
+        // return view($clientNM.'.banner.index', ['banner'=>$banner, 'client_slug'=>$clientNM]);
+        return view('banner.index', ['banner'=>$banner, 'client_slug'=>$clientNM]);
     }
 
     /**
@@ -60,7 +61,8 @@ class BannerController extends Controller
             $clientID = $sql_client[0]->client_id;
             $clientNM = $sql_client[0]->client_slug;
         }
-        return view($clientNM.'.banner.create', ['client_slug'=>$clientNM]);
+        // return view($clientNM.'.banner.create', ['client_slug'=>$clientNM]);
+        return view('banner.create', ['client_slug'=>$clientNM]);
     }
 
     /**
@@ -124,7 +126,8 @@ class BannerController extends Controller
             $clientNM = $sql_client[0]->client_slug;
         }
         $banner_edit = \App\Banner::where('client_id', $clientID)->findOrFail($id);
-        return view($clientNM.'.banner.edit',['banner_edit'=>$banner_edit, 'client_slug'=>$clientNM]);
+        // return view($clientNM.'.banner.edit',['banner_edit'=>$banner_edit, 'client_slug'=>$clientNM]);
+        return view('banner.edit',['banner_edit'=>$banner_edit, 'client_slug'=>$clientNM]);
     }
 
     /**
@@ -204,7 +207,8 @@ class BannerController extends Controller
         }
         $deleted_banner = \App\Banner::onlyTrashed()->where('client_id','=',$clientID)->get();//paginate(10);
 
-        return view($clientNM.'.banner.trash', ['banner' => $deleted_banner, 'client_slug'=>$clientNM]);
+        // return view($clientNM.'.banner.trash', ['banner' => $deleted_banner, 'client_slug'=>$clientNM]);
+        return view('banner.trash', ['banner' => $deleted_banner, 'client_slug'=>$clientNM]);
     }
 
     public function restore($id, $client)

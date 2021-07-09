@@ -52,7 +52,8 @@ class productController extends Controller
             ->where('Product_name','LIKE',"%$keyword%")->where('client_id','=',$clientID)->get();
             //->paginate(10);
             }
-        return view($clientNM.'.products.index', ['products'=> $products, 'client_slug'=>$clientNM]);
+        // return view($clientNM.'.products.index', ['products'=> $products, 'client_slug'=>$clientNM]);
+            return view('products.index', ['products'=> $products, 'client_slug'=>$clientNM]);
     }
 
     /**
@@ -71,7 +72,8 @@ class productController extends Controller
             $clientID = $sql_client[0]->client_id;
             $clientNM = $sql_client[0]->client_slug;
         }
-        return view($clientNM.'.products.create', ['client_slug'=>$clientNM]);
+        // return view($clientNM.'.products.create', ['client_slug'=>$clientNM]);
+        return view('products.create', ['client_slug'=>$clientNM]);
     }
 
     /**
@@ -177,7 +179,8 @@ class productController extends Controller
             $clientNM = $sql_client[0]->client_slug;
         }
         $product = \App\product::where('client_id', $clientID)->findOrFail($id);
-        return view($clientNM.'.products.edit', ['product' => $product, 'client_slug' => $clientNM]);
+        // return view($clientNM.'.products.edit', ['product' => $product, 'client_slug' => $clientNM]);
+        return view('products.edit', ['product' => $product, 'client_slug' => $clientNM]);
     }
 
     /**
@@ -273,7 +276,8 @@ class productController extends Controller
         }
         $products = \App\product::onlyTrashed()->get();//->paginate(10);
 
-        return view($clientNM.'.products.trash', ['products' => $products, 'client_slug'=>$clientNM]);
+        // return view($clientNM.'.products.trash', ['products' => $products, 'client_slug'=>$clientNM]);
+        return view('products.trash', ['products' => $products, 'client_slug'=>$clientNM]);
     }
 
     public function restore($id, $client){
@@ -328,7 +332,8 @@ class productController extends Controller
         }
         $products = \App\product::with('categories')->where('client_id', $clientID)->whereRaw('stock < low_stock_treshold')->get();//->paginate(10);
 
-        return view($clientNM.'.products.low_stock', ['products' => $products, 'client_slug'=>$clientNM]);
+        // return view($clientNM.'.products.low_stock', ['products' => $products, 'client_slug'=>$clientNM]);
+        return view('products.low_stock', ['products' => $products, 'client_slug'=>$clientNM]);
     }
 
     public function edit_stock($client){
@@ -341,7 +346,8 @@ class productController extends Controller
             $clientID = $sql_client[0]->client_id;
             $clientNM = $sql_client[0]->client_slug;
         }
-        return view($clientNM.'.products.edit_stock', ['client_slug'=>$clientNM]);
+        // return view($clientNM.'.products.edit_stock', ['client_slug'=>$clientNM]);
+        return view('products.edit_stock', ['client_slug'=>$clientNM]);
     }
 
     public function update_low_stock(Request $request, $client){

@@ -50,7 +50,8 @@ class UserController extends Controller
         if($status){
             $users = \App\User::where('status', 'Like', "%$status")->get();//paginate(10);
         }
-        return view ($clientNM.'.users.index',['users'=>$users, 'client_slug'=>$clientNM]);
+        // return view ($clientNM.'.users.index',['users'=>$users, 'client_slug'=>$clientNM]);
+        return view ('users.index',['users'=>$users, 'client_slug'=>$clientNM]);
     }
 
     /**
@@ -69,7 +70,8 @@ class UserController extends Controller
             $clientID = $sql_client[0]->client_id;
             $clientNM = $sql_client[0]->client_slug;
         }
-        return view($clientNM.'.users.create',['client_slug'=>$clientNM]);
+        // return view($clientNM.'.users.create',['client_slug'=>$clientNM]);
+        return view('users.create',['client_slug'=>$clientNM]);
     }
 
     /**
@@ -143,7 +145,8 @@ class UserController extends Controller
             $clientNM = $sql_client[0]->client_slug;
         }
         $user = \App\User::findOrFail($id);
-        return view($clientNM.'.users.edit',['user'=>$user, 'client_slug'=>$clientNM]);
+        // return view($clientNM.'.users.edit',['user'=>$user, 'client_slug'=>$clientNM]);
+        return view('users.edit',['user'=>$user, 'client_slug'=>$clientNM]);
     }
 
     /**

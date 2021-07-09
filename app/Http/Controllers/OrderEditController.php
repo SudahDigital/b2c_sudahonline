@@ -28,7 +28,8 @@ class OrderEditController extends Controller
         }
         $order = \App\Order::findOrFail($id);
         $products = \App\product::get();
-        return view($clientNM.'.orders.edit_order', ['order' => $order],['products' => $products, 'client_slug' => $clientNM]);
+        // return view($clientNM.'.orders.edit_order', ['order' => $order],['products' => $products, 'client_slug' => $clientNM]);
+        return view('orders.edit_order', ['order' => $order],['products' => $products, 'client_slug' => $clientNM]);
     }
 
     public function update(Request $request, $client){

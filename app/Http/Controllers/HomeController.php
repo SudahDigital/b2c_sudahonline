@@ -25,6 +25,8 @@ class HomeController extends Controller
     public function index(Request $request)
     {
         $client = auth()->user()->client_id;
+
+        // echo "jalan_".$client;exit();
         $sql_client = DB::select("SELECT clients.client_id, 
                     clients.client_slug FROM clients 
                     WHERE clients.client_id = '$client'"); 
